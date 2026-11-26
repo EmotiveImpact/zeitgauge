@@ -1,0 +1,151 @@
+# Zeitgauge region config: United States (scaffold, not yet scored live)
+#
+# Same scoring rules as uk.toml. FRED series IDs are given where a free
+# series exists. Normals and swings are first estimates from long-run US data.
+# The narrative lens (Strauss-Howe) is displayed as context only and carries
+# zero weight in the score. See docs/frameworks.md for why.
+
+[region]
+id = "us"
+name = "United States"
+currency = "USD"
+
+[[signals]]
+id = "umich"
+lens = "household"
+name = "Consumer sentiment (University of Michigan)"
+normal = 85
+swing = 12
+direction = 1
+weight = 1.5
+leading = true
+source = "FRED UMCSENT"
+fetch = { kind = "fred", series = "UMCSENT" }
+
+[[signals]]
+id = "yield_curve"
+lens = "household"
+name = "Yield curve, 10-year minus 2-year (negative = recession warning)"
+unit = "pp"
+normal = 1.0
+swing = 1.0
+direction = 1
+weight = 1.5
+leading = true
+source = "FRED T10Y2Y"
+fetch = { kind = "fred", series = "T10Y2Y" }
+
+[[signals]]
+id = "sahm"
+lens = "household"
+name = "Sahm rule indicator (0.5 or more = recession under way)"
+unit = "pp"
+normal = 0.1
+swing = 0.3
+direction = -1
+weight = 1.5
+leading = true
+source = "Computed from FRED UNRATE (src/zeitgauge/indicators/sahm.py)"
+fetch = { kind = "derived", from = "UNRATE", method = "sahm" }
+
+[[signals]]
+id = "cpi"
+lens = "household"
+name = "Inflation (CPI, year on year)"
+unit = "%"
+normal = 2.5
+swing = 2.0
+direction = -1
+weight = 1.0
+source = "FRED CPIAUCSL (year-on-year change)"
+fetch = { kind = "fred", series = "CPIAUCSL", transform = "yoy" }
+
+[[signals]]
+id = "unemployment"
+lens = "household"
+name = "Unemployment"
+unit = "%"
+normal = 5.5
+swing = 1.6
+direction = -1
+weight = 1.0
+source = "FRED UNRATE"
+fetch = { kind = "fred", series = "UNRATE" }
+
+[[signals]]
+id = "saving_rate"
+lens = "household"
+name = "Personal saving rate (high = caution)"
+unit = "%"
+normal = 7.0
+swing = 2.5
+direction = -1
+weight = 1.0
+source = "FRED PSAVERT"
+fetch = { kind = "fred", series = "PSAVERT" }
+
+[[signals]]
+id = "card_delinquency"
+lens = "household"
+name = "Credit card delinquency rate"
+unit = "%"
+normal = 3.5
+swing = 1.0
+direction = -1
+weight = 1.0
+source = "FRED DRCCLACBS"
+fetch = { kind = "fred", series = "DRCCLACBS" }
+
+[[signals]]
+id = "house_income"
+lens = "society"
+name = "House price to income"
+unit = "x"
+normal = 4.5
+swing = 0.8
+direction = -1
+weight = 1.0
+source = "Harvard JCHS / FRED MSPUS divided by MEHOINUSA672N"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "youth_unemployment"
+lens = "society"
+name = "Youth unemployment (16 to 24)"
+unit = "%"
+normal = 11
+swing = 3
+direction = -1
+weight = 1.0
+source = "FRED LNS14024887"
+fetch = { kind = "fred", series = "LNS14024887" }
+
+[[signals]]
+id = "treasury_10y"
+lens = "society"
+name = "10-year Treasury yield (state finance strain)"
+unit = "%"
+normal = 3.5
+swing = 1.3
+direction = -1
+weight = 1.0
+source = "FRED DGS10"
+fetch = { kind = "fred", series = "DGS10" }
+
+[[signals]]
+id = "trust_gov"
+lens = "society"
+name = "Trust in federal government (Pew, %)"
+unit = "%"
+normal = 30
+swing = 10
+direction = 1
+weight = 1.0
+source = "Pew Research Center trust in government series"
+fetch = { kind = "manual" }
+
+[narrative]
+# Context only, weight 0. Shown beside the score as a story to test against data.
+framework = "Strauss-Howe"
+turning = "Fourth Turning (Crisis), dated by its authors to roughly 2008 to the early 2030s"
+check_against = ["trust_gov", "youth_unemployment", "house_income"]

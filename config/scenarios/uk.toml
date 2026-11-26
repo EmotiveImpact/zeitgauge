@@ -1,0 +1,125 @@
+# UK scenarios (Schwartz, The Art of the Long View). See docs/books/schwartz.md.
+#
+# Four worlds from two critical uncertainties. No probabilities on purpose:
+# each world gets equal attention. Signposts are conditions on signals we
+# already score, so "which world are we drifting towards" is a count, not a hunch.
+#
+# field = "score" or "momentum" for a signal (positive = better for households),
+# or signal = "lens:household" / "lens:society" with field = "level" or "momentum".
+# Each signpost has either above = x or below = x.
+
+[meta]
+region = "uk"
+focal_question = "What should a small consumer brand launch in the UK over the next 12 to 18 months?"
+axis_1 = "Inflation path: easing or sticky"
+axis_2 = "Social fabric: holding or fraying"
+review = "Every six months, or straight after a shock"
+predetermined = [
+  "Most mortgages are fixed for two to five years, so past rate rises are still reaching households as deals end",
+  "The population is ageing: more over-65s, a smaller share of working age",
+  "AI tools are spreading fast whatever the economy does",
+]
+
+[[scenario]]
+id = "thaw"
+name = "Thaw"
+story = "Inflation eases, the Bank cuts, real pay recovers and people slowly start treating themselves again. Trust holds."
+leans_towards = "recovery"
+  [[scenario.signposts]]
+  signal = "cpi"
+  field = "momentum"
+  above = 0
+  label = "Inflation falling"
+  [[scenario.signposts]]
+  signal = "bank_rate"
+  field = "momentum"
+  above = 0
+  label = "Bank Rate cut"
+  [[scenario.signposts]]
+  signal = "gfk"
+  field = "momentum"
+  above = 0
+  label = "Confidence rising"
+  [[scenario.signposts]]
+  signal = "lens:society"
+  field = "level"
+  above = -0.25
+  label = "Society lens out of the strained zone"
+
+[[scenario]]
+id = "grind"
+name = "Grind"
+story = "Prices stay sticky and rates stay high, but society copes. A long, dull squeeze where value and small rewards win."
+leans_towards = "downturn"
+  [[scenario.signposts]]
+  signal = "cpi"
+  field = "momentum"
+  below = 0
+  label = "Inflation rising or stuck"
+  [[scenario.signposts]]
+  signal = "bank_rate"
+  field = "momentum"
+  below = 0.001
+  label = "No rate cut"
+  [[scenario.signposts]]
+  signal = "lens:society"
+  field = "momentum"
+  above = 0
+  label = "Society lens improving"
+  [[scenario.signposts]]
+  signal = "trust_unrest"
+  field = "score"
+  above = -0.5
+  label = "No sharp rise in unrest"
+
+[[scenario]]
+id = "frayed"
+name = "Frayed"
+story = "Sticky prices meet falling trust. Protest, polarisation and anxiety grow. People spend on safety, comfort and control."
+leans_towards = "downturn"
+  [[scenario.signposts]]
+  signal = "cpi"
+  field = "momentum"
+  below = 0
+  label = "Inflation rising or stuck"
+  [[scenario.signposts]]
+  signal = "lens:society"
+  field = "level"
+  below = -0.25
+  label = "Society lens strained"
+  [[scenario.signposts]]
+  signal = "trust_unrest"
+  field = "score"
+  below = 0
+  label = "Trust falling or unrest rising"
+  [[scenario.signposts]]
+  signal = "house_earnings"
+  field = "score"
+  below = -0.5
+  label = "Housing far out of reach"
+
+[[scenario]]
+id = "uneasy_calm"
+name = "Uneasy calm"
+story = "The economy improves on paper but trust keeps sliding. Spending recovers unevenly and comfort and belonging sell well."
+leans_towards = "recovery"
+  [[scenario.signposts]]
+  signal = "cpi"
+  field = "momentum"
+  above = 0
+  label = "Inflation falling"
+  [[scenario.signposts]]
+  signal = "lens:household"
+  field = "momentum"
+  above = 0
+  label = "Household lens improving"
+  [[scenario.signposts]]
+  signal = "lens:society"
+  field = "level"
+  below = -0.25
+  label = "Society lens strained"
+  [[scenario.signposts]]
+  signal = "trust_unrest"
+  field = "score"
+  below = 0
+  label = "Trust falling or unrest rising"

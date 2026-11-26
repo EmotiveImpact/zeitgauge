@@ -1,0 +1,300 @@
+<title>Zeitgauge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: phone-first single column. Verdict and cycle clock first, then playbook, idea scorer, editable signals, method notes. */
+:root{
+  --bg:#f4f6f7; --surface:#fff; --fg:#16202a; --muted:#5a6773; --line:#dce2e7;
+  --accent:#1f5f8b; --accent-soft:#e2edf5;
+  --bad:#b03a2e; --bad-bg:#f8e3e0; --mid:#8a6400; --mid-bg:#f8eed4; --ok:#1c7a4b; --ok-bg:#e0f2e8;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#161f26; --fg:#e5ebef; --muted:#98a6b1; --line:#27333c;
+  --accent:#7cb8e2; --accent-soft:#1a3141;
+  --bad:#f0998f; --bad-bg:#3e1f1c; --mid:#f0c766; --mid-bg:#382f17; --ok:#7fd6a6; --ok-bg:#15342a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#161f26; --fg:#e5ebef; --muted:#98a6b1; --line:#27333c;
+  --accent:#7cb8e2; --accent-soft:#1a3141;
+  --bad:#f0998f; --bad-bg:#3e1f1c; --mid:#f0c766; --mid-bg:#382f17; --ok:#7fd6a6; --ok-bg:#15342a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.7rem,6vw,2.3rem)}
+h2{font-size:1.25rem;margin:36px 0 6px}
+h3{font-size:1rem}
+p{margin:0 0 10px}
+a{color:var(--accent)}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px;min-width:0}
+.verdict h2{margin:4px 0 6px;font-size:1.5rem}
+.idx{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.idx div{background:var(--bg);border-radius:10px;padding:10px 12px}
+.idx b{display:block;font-family:var(--display);font-size:1.6rem;font-variant-numeric:tabular-nums}
+.idx span{font-size:.78rem;color:var(--muted)}
+.clock{width:100%;max-width:420px;display:block;margin:14px auto 0}
+.clock text{font-family:var(--body);font-size:11px;fill:var(--muted)}
+.clock .ql{font-family:var(--display);font-size:13px;font-weight:700;fill:var(--fg)}
+.clock .on{fill:var(--accent-soft)}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.bad{background:var(--bad-bg);color:var(--bad)} .mid{background:var(--mid-bg);color:var(--mid)} .ok{background:var(--ok-bg);color:var(--ok)}
+.ideas{display:grid;gap:10px;margin-top:10px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.idea h3{margin-bottom:4px} .idea p{margin:0;font-size:.92rem} .idea .ex{font-size:.82rem;color:var(--muted);margin-top:4px}
+/* signals */
+.sig{border-top:1px solid var(--line);padding:12px 0}
+.sig:first-of-type{border-top:0;padding-top:4px}
+.sig-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.sig-name{font-weight:600;font-size:.95rem}
+.sig-src{font-size:.78rem;color:var(--muted);margin:2px 0 8px}
+.vals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.vals label{font-size:.72rem;color:var(--muted);display:block;margin-bottom:2px}
+input,select,textarea{font:inherit;width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+input[type=number]{font-variant-numeric:tabular-nums}
+.norm{padding:9px 0;font-variant-numeric:tabular-nums;font-size:.95rem}
+input:focus-visible,select:focus-visible,textarea:focus-visible,.btn:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lead{font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-left:6px}
+/* scorer */
+.form{display:grid;gap:10px}
+.rates{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.rates label{font-size:.75rem;color:var(--muted)}
+.rank{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+.rank li{display:flex;gap:12px;align-items:center;background:var(--bg);border-radius:10px;padding:10px 12px}
+.rank .sc{font-family:var(--display);font-weight:700;font-size:1.2rem;min-width:2.6em;text-align:right;font-variant-numeric:tabular-nums}
+.rank .nm{flex:1;min-width:0;font-size:.92rem}
+.rank .nm small{display:block;color:var(--muted);font-size:.75rem}
+.rank button{font:inherit;font-size:.78rem;background:none;border:0;color:var(--muted);cursor:pointer;padding:4px}
+.btn{font:inherit;font-weight:600;font-size:.9rem;padding:10px 14px;border-radius:9px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.formula{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.88rem;overflow-x:auto}
+ol.plain,ul.plain{padding-left:20px;margin:6px 0 0} ol.plain li,ul.plain li{margin-bottom:6px;font-size:.92rem}
+footer{margin-top:40px;font-size:.82rem;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">United Kingdom · readings as of 26 November 2026</div>
+  <h1>Zeitgauge</h1>
+  <p class="muted">Fourteen UK signals, scored against their long-run normal, place the economy on a cycle clock and set the product playbook. Update the numbers each month as new figures come out.</p>
+
+  <section class="card verdict" aria-live="polite">
+    <div class="eyebrow">Where the UK is now</div>
+    <h2 id="phaseName">…</h2>
+    <p id="phaseText" class="muted" style="margin:0"></p>
+    <div class="idx">
+      <div><b id="wIdx">–</b><span>Household health (50 = normal)</span></div>
+      <div><b id="sIdx">–</b><span>Social stability (50 = normal)</span></div>
+    </div>
+    <svg class="clock" viewBox="0 0 320 260" role="img" aria-label="Cycle clock showing the current phase">
+      <rect id="q-recovery" x="30" y="10" width="140" height="110" rx="10" fill="var(--bg)" stroke="var(--line)"/>
+      <rect id="q-expansion" x="174" y="10" width="140" height="110" rx="10" fill="var(--bg)" stroke="var(--line)"/>
+      <rect id="q-downturn" x="30" y="124" width="140" height="110" rx="10" fill="var(--bg)" stroke="var(--line)"/>
+      <rect id="q-slowdown" x="174" y="124" width="140" height="110" rx="10" fill="var(--bg)" stroke="var(--line)"/>
+      <text class="ql" x="40" y="30">Recovery</text>
+      <text class="ql" x="184" y="30">Expansion</text>
+      <text class="ql" x="40" y="226">Downturn</text>
+      <text class="ql" x="184" y="226">Slowdown</text>
+      <text x="172" y="252" text-anchor="middle">← below normal · above normal →</text>
+      <text x="14" y="122" text-anchor="middle" transform="rotate(-90 14 122)">worsening · improving</text>
+      <circle id="dot" cx="172" cy="122" r="8" fill="var(--accent)" stroke="var(--surface)" stroke-width="3"/>
+    </svg>
+    <p class="small muted" style="margin:8px 0 0">Across: how household finances compare with the UK's long-run normal. Up and down: whether they are improving or worsening since the last reading.</p>
+  </section>
+
+  <h2>Product playbook for this phase</h2>
+  <p class="muted small">The feelings to design for now, plus an overlay for how stable society feels.</p>
+  <div class="ideas" id="ideas"></div>
+  <div class="ideas" id="overlay"></div>
+  <div class="idea" id="techIdea" style="margin-top:10px"></div>
+
+  <h2>Score your product ideas</h2>
+  <p class="muted small">Rate each idea 1 to 5. The score favours ideas that fit today's mood and still work if the mood moves on, which is how scenario planners choose robust bets. Ideas are saved on this device only.</p>
+  <div class="card form">
+    <div><label class="small" for="iName">Idea</label><input id="iName" type="text" placeholder="e.g. heated throw and draught kit bundle"></div>
+    <div class="rates">
+      <div><label for="rFit">Fits this phase</label><select id="rFit"></select></div>
+      <div><label for="rRob">Works next phase too</label><select id="rRob"></select></div>
+      <div><label for="rAud">Audience size</label><select id="rAud"></select></div>
+      <div><label for="rSkill">Fits your skills</label><select id="rSkill"></select></div>
+      <div><label for="rCost">Cost to test (5 = high)</label><select id="rCost"></select></div>
+    </div>
+    <div><button class="btn" id="addIdea" type="button">Add and rank</button></div>
+    <ol class="rank" id="rank"></ol>
+  </div>
+
+  <h2>Signals</h2>
+  <p class="muted small">Latest reading, the one before it, and the long-run UK normal. Change any number and everything above recalculates. <span class="lead" style="margin:0">Leading</span> signals look ahead and count one and a half times.</p>
+  <div class="card"><h3>Household health</h3><p class="small muted" style="margin:2px 0 6px">Short business and credit cycle, after the OECD leading-indicator method.</p><div id="sig-wallet"></div></div>
+  <div class="card"><h3>Social stability</h3><p class="small muted" style="margin:2px 0 6px">A light version of Peter Turchin's political stress index: living costs, housing, young people's prospects and state finances.</p><div id="sig-society"></div></div>
+  <div class="card">
+    <h3>Technology wave</h3>
+    <p class="small muted">Carlota Perez's version of the Kondratiev long wave: each technology has a hype-and-build phase, a shake-out, then a long everyday phase. Pick where AI sits.</p>
+    <label class="small" for="tech">AI is currently in the…</label>
+    <select id="tech">
+      <option value="install">Build and hype phase</option>
+      <option value="turn">Shake-out</option>
+      <option value="deploy">Everyday phase</option>
+    </select>
+  </div>
+  <div class="actions">
+    <button class="btn" id="copy" type="button">Copy this month's summary</button>
+    <button class="btn ghost" id="reset" type="button">Reset to November 2026 figures</button>
+  </div>
+  <p class="small muted" id="copyMsg" style="margin-top:6px"></p>
+
+  <h2>How the score works</h2>
+  <div class="card">
+    <ol class="plain">
+      <li><strong>Compare each signal with normal.</strong> Score = (latest − normal) ÷ typical swing, flipped so that positive always means better for households, capped at ±2.5.</li>
+      <li><strong>Measure the direction.</strong> Momentum = (latest − previous) ÷ typical swing, flipped the same way.</li>
+      <li><strong>Combine.</strong> Weighted averages give a level and a momentum for each lens. Leading signals weigh 1.5, the rest 1.</li>
+      <li><strong>Place it on the clock.</strong> Level sets left or right, momentum sets up or down. That gives four phases, the same idea as the ONS and Eurostat business cycle clocks.</li>
+      <li><strong>Pick the playbook.</strong> Phase plus social stability chooses the product feelings to design for.</li>
+    </ol>
+    <div class="formula">Index = 50 + 20 × weighted average score (50 is the UK's long-run normal; 30 is one typical swing worse)</div>
+    <p class="small muted" style="margin:10px 0 0">The normal and typical swing for each signal are my estimates from long-run UK data. Refine them once you download the full series.</p>
+  </div>
+
+  <h2>Sources for these readings</h2>
+  <ul class="plain small">
+    <li><a href="https://nielseniq.com/global/en/news-center/2026/consumer-confidence-up-two-points-to-22-in-november">GfK Consumer Confidence, November 2026</a></li>
+    <li><a href="https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate">Bank of England rate decision and inflation outlook, 5 November 2026</a></li>
+    <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices">ONS inflation, October 2026</a></li>
+    <li><a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/averageweeklyearningsingreatbritain/latest">ONS earnings, July to September 2026</a></li>
+    <li><a href="https://www.ons.gov.uk/economy/economicoutputandproductivity/output/bulletins/economicactivityandsocialchangeintheukrealtimeindicators/latest">ONS real-time indicators (Direct Debit failures), November 2026</a></li>
+    <li><a href="https://www.ons.gov.uk/economy/nationalaccounts/uksectoraccounts/bulletins/quarterlysectoraccounts/latest">ONS saving ratio, April to June 2026</a></li>
+    <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/housing/bulletins/housingaffordabilityinenglandandwales/2025">ONS housing affordability, 2025</a></li>
+    <li><a href="https://commonslibrary.parliament.uk/research-briefings/sn05871/">Commons Library youth unemployment, November 2026</a></li>
+    <li><a href="https://robomacro.com/notes/UK_Macro_Daily/UK_Macro_Daily_20261119.html">Gilt yield and retail sales, 19 November 2026</a></li>
+  </ul>
+
+  <footer>Companion report: <a href="https://claude.ai/artifact/UYn63fpMMcXe1ui1cTQ3Vb">Reading the Signals</a>. Not financial advice; a structured way to think about what people will buy.</footer>
+</div>
+
+<script>
+const SIGNALS={
+ wallet:[
+  {id:"gfk",name:"Consumer confidence (GfK)",unit:"",v:-22,p:-24,mu:-11,sd:10,dir:1,w:1.5,lead:true,src:"GfK, Nov 2026"},
+  {id:"pfin",name:"Personal finances, next 12 months (GfK)",unit:"",v:-5,p:-3,mu:0,sd:7,dir:1,w:1.5,lead:true,src:"GfK sub-index, Nov 2026"},
+  {id:"infx",name:"Inflation expected in a year (Bank of England)",unit:"%",v:5.0,p:null,mu:2.5,sd:1.5,dir:-1,w:1.5,lead:true,src:"BoE forecast, Nov 2026"},
+  {id:"cpi",name:"Inflation now (CPI)",unit:"%",v:3.6,p:3.5,mu:2.5,sd:1.8,dir:-1,w:1,src:"ONS, Oct 2026"},
+  {id:"pay",name:"Real pay growth (regular, after CPIH)",unit:"%",v:0.2,p:null,mu:0.8,sd:2,dir:1,w:1,src:"ONS, Jul to Sep 2026"},
+  {id:"unemp",name:"Unemployment",unit:"%",v:4.6,p:4.9,mu:5.5,sd:1.5,dir:-1,w:1,src:"ONS, Jul to Sep 2026"},
+  {id:"rate",name:"Bank Rate",unit:"%",v:4.0,p:3.75,mu:2.5,sd:2,dir:-1,w:1,src:"BoE, 5 Nov 2026"},
+  {id:"dd",name:"Direct Debit failure rate",unit:"%",v:2.41,p:2.40,mu:2.3,sd:0.1,dir:-1,w:1,src:"ONS real-time, Oct 2026"},
+  {id:"retail",name:"Retail sales volume, year on year",unit:"%",v:0.8,p:null,mu:2,sd:3,dir:1,w:1,src:"ONS, Sep 2026"},
+  {id:"save",name:"Household saving ratio (high = caution)",unit:"%",v:8.8,p:8.6,mu:8,sd:3,dir:-1,w:1,src:"ONS, Apr to Jun 2026"}
+ ],
+ society:[
+  {id:"house",name:"House price to earnings (England)",unit:"×",v:7.6,p:7.8,mu:6.5,sd:1.8,dir:-1,w:1,src:"ONS, 2025"},
+  {id:"youth",name:"Youth unemployment (16 to 24)",unit:"%",v:15.1,p:16.2,mu:14,sd:3,dir:-1,w:1,src:"Commons Library, Jul to Sep 2026"},
+  {id:"gilt",name:"10-year gilt yield (state finance strain)",unit:"%",v:5.37,p:null,mu:3.5,sd:1.3,dir:-1,w:1,src:"Market data, 19 Nov 2026"},
+  {id:"trust",name:"Trust and unrest, your judgement (−2 to +2)",unit:"",v:-1,p:null,mu:0,sd:1,dir:1,w:1,src:"Your read of news, strikes and trust surveys"}
+ ]
+};
+const PHASES={
+ expansion:["Expansion","Household finances are above normal and improving. People spend on status, novelty and time saved.",
+  [["Status","Things people enjoy showing off.","e.g. limited drops, personalised goods, travel extras"],
+   ["Time saved","Pay to skip chores.","e.g. done-for-you services, delivery add-ons, subscriptions"],
+   ["Novelty","New experiences and gadgets.","e.g. experience boxes, events, new tech accessories"]]],
+ slowdown:["Slowdown","Finances are still above normal but turning down. Get ahead of the thrift wave before it arrives.",
+  [["Affordable premium","Cheaper versions of things people already love.","e.g. dupes, own-label premium, refill packs"],
+   ["Flexible spending","Let people pause or downsize rather than cancel.","e.g. pausable subscriptions, smaller pack sizes"],
+   ["Planning ahead","Help people prepare for tighter times.","e.g. budgeting tools, bulk-buy and batch-cook kits"]]],
+ downturn:["Downturn: the squeeze","Household finances are below normal and getting worse. People cut big purchases and look for small comforts and control.",
+  [["Small rewards","Affordable treats that feel premium.","e.g. minis, press-on nails, at-home café and salon rituals"],
+   ["Make do and mend","Fix, cook and make at home.","e.g. repair kits, air fryer accessories, energy-saving home kits"],
+   ["Money control","Help people feel in charge of spending.","e.g. budgeting templates, resale tools, cheaper swaps"]]],
+ recovery:["Recovery","Finances are below normal but improving. Small treats scale up and postponed purchases return.",
+  [["Treat yourself again","Step up from small treats to mid-priced ones.","e.g. affordable luxury, beauty and fragrance upgrades"],
+   ["Catch-up purchases","Replace what people put off.","e.g. clothing basics, home upgrades on a budget, refurbished tech"],
+   ["Getting out again","Cheap experiences and socialising.","e.g. clubs, local events, budget days out"]]]
+};
+const OVERLAY={
+ stable:[["Belonging through fun","Society feels steady, so social and playful products travel well.","e.g. group activities, shareable products, hobbies"]],
+ strained:[["Safety and self-reliance","Trust is low, so people want to feel prepared.","e.g. home security, at-home health tests, power banks, savings products"],
+           ["Comfort and nostalgia","Familiar, warm things for an uneasy time.","e.g. heated throws, comfort food, retro and vinyl, pet care"]]
+};
+const TECH={install:["AI: build and hype phase","Sell picks and shovels: templates, courses and tools that help ordinary people use AI. Mass consumer AI products are still early and risky."],
+ turn:["AI: shake-out","Prices fall and weak players vanish. Bundle cheap AI into simple everyday products."],
+ deploy:["AI: everyday phase","AI is cheap and trusted. Build mass-market products that use it quietly inside familiar things."]};
+
+const KEY="signal-radar-uk-v2";
+function defaults(){const s={tech:"install",ideas:[
+  {n:"Heated throw and draught kit bundle (example)",r:[5,4,5,3,2]},
+  {n:"Budget batch-cook meal plan app (example)",r:[4,4,4,3,2]},
+  {n:"Luxury travel accessories (example)",r:[1,2,2,3,3]}],vals:{}};
+ Object.values(SIGNALS).flat().forEach(g=>s.vals[g.id]={v:g.v,p:g.p});return s}
+function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.vals)return r}catch(e){}return defaults()}
+let state=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+const clip=(x,a)=>Math.max(-a,Math.min(a,x));
+function num(x){return x===null||x===""||isNaN(x)?null:+x}
+
+function renderSignals(){
+  for(const lens of ["wallet","society"]){
+    const box=document.getElementById("sig-"+lens);
+    box.innerHTML=SIGNALS[lens].map(g=>`<div class="sig">
+      <div class="sig-top"><div class="sig-name">${g.name}${g.lead?'<span class="lead">Leading</span>':''}</div><span class="pill" id="z-${g.id}"></span></div>
+      <div class="sig-src">${g.src}</div>
+      <div class="vals">
+        <div><label for="v-${g.id}">Latest${g.unit?" ("+g.unit+")":""}</label><input type="number" step="any" inputmode="decimal" id="v-${g.id}" data-id="${g.id}" data-k="v"></div>
+        <div><label for="p-${g.id}">Previous</label><input type="number" step="any" inputmode="decimal" id="p-${g.id}" data-id="${g.id}" data-k="p" placeholder="add"></div>
+        <div><label>Normal</label><div class="norm">${g.mu}${g.unit}</div></div>
+      </div></div>`).join("");
+    box.addEventListener("input",e=>{const t=e.target;if(!t.dataset.id)return;state.vals[t.dataset.id][t.dataset.k]=num(t.value);save();calc()});
+  }
+}
+function fillInputs(){Object.values(SIGNALS).flat().forEach(g=>{const s=state.vals[g.id];document.getElementById("v-"+g.id).value=s.v??"";document.getElementById("p-"+g.id).value=s.p??""})}
+function lensScore(lens){
+  let L=0,LW=0,M=0,MW=0;
+  SIGNALS[lens].forEach(g=>{const s=state.vals[g.id];if(s.v===null)return;
+    const z=clip(g.dir*(s.v-g.mu)/g.sd,2.5);L+=z*g.w;LW+=g.w;
+    const el=document.getElementById("z-"+g.id);el.className="pill "+(z<=-0.5?"bad":z>=0.5?"ok":"mid");el.textContent=(z<=-0.5?"Worse than normal":z>=0.5?"Better than normal":"Near normal");
+    if(s.p!==null){M+=clip(g.dir*(s.v-s.p)/g.sd,2.5)*g.w;MW+=g.w}});
+  return {level:LW?L/LW:0,mom:MW?M/MW:0};
+}
+function calc(){
+  const w=lensScore("wallet"),s=lensScore("society");
+  const wi=Math.round(50+20*w.level),si=Math.round(50+20*s.level);
+  document.getElementById("wIdx").textContent=wi;document.getElementById("sIdx").textContent=si;
+  const phase=w.level>=0?(w.mom>=0?"expansion":"slowdown"):(w.mom>=0?"recovery":"downturn");
+  ["expansion","slowdown","downturn","recovery"].forEach(q=>document.getElementById("q-"+q).setAttribute("fill",q===phase?"var(--accent-soft)":"var(--bg)"));
+  const cx=172+clip(w.level/1.5,1)*130, cy=122-clip(w.mom/0.3,1)*100;
+  const d=document.getElementById("dot");d.setAttribute("cx",cx.toFixed(1));d.setAttribute("cy",cy.toFixed(1));
+  const P=PHASES[phase],flat=Math.abs(w.mom)<0.03;
+  const stab=s.level>=-0.25?"stable":"strained";
+  document.getElementById("phaseName").textContent=P[0]+(flat?" (levelling off)":"")+(stab==="strained"?", society under strain":"");
+  document.getElementById("phaseText").textContent=P[1];
+  document.getElementById("ideas").innerHTML=P[2].map(i=>card(i)).join("");
+  document.getElementById("overlay").innerHTML=OVERLAY[stab].map(i=>card(i)).join("");
+  const t=TECH[state.tech];document.getElementById("techIdea").innerHTML=`<h3>${t[0]}</h3><p>${t[1]}</p>`;
+  document.getElementById("tech").value=state.tech;
+  window._sum={phase:document.getElementById("phaseName").textContent,wi,si};
+}
+function card(i){return `<div class="idea"><h3>${i[0]}</h3><p>${i[1]}</p><div class="ex">${i[2]}</div></div>`}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function scoreIdea(r){const ws=0.30*r[0]+0.25*r[1]+0.20*r[2]+0.15*r[3]+0.10*(6-r[4]);return Math.round((ws-1)/4*100)}
+function renderIdeas(){
+  const list=state.ideas.map((x,i)=>({...x,i,s:scoreIdea(x.r)})).sort((a,b)=>b.s-a.s);
+  document.getElementById("rank").innerHTML=list.length?list.map(x=>`<li><span class="sc">${x.s}</span><span class="nm">${esc(x.n)}<small>fit ${x.r[0]} · robust ${x.r[1]} · audience ${x.r[2]} · skills ${x.r[3]} · cost ${x.r[4]}</small></span><button type="button" data-del="${x.i}" aria-label="Remove ${esc(x.n)}">Remove</button></li>`).join(""):'<li><span class="nm muted">No ideas yet. Add one above.</span></li>';
+}
+["rFit","rRob","rAud","rSkill","rCost"].forEach(id=>{const s=document.getElementById(id);s.innerHTML=[1,2,3,4,5].map(n=>`<option${n===3?" selected":""}>${n}</option>`).join("")});
+document.getElementById("addIdea").addEventListener("click",()=>{const n=document.getElementById("iName").value.trim();if(!n){document.getElementById("iName").focus();return}
+  state.ideas.push({n,r:["rFit","rRob","rAud","rSkill","rCost"].map(id=>+document.getElementById(id).value)});document.getElementById("iName").value="";save();renderIdeas()});
+document.getElementById("rank").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(!b)return;state.ideas.splice(+b.dataset.del,1);save();renderIdeas()});
+document.getElementById("tech").addEventListener("change",e=>{state.tech=e.target.value;save();calc()});
+document.getElementById("reset").addEventListener("click",()=>{const ideas=state.ideas;state=defaults();state.ideas=ideas;save();fillInputs();calc();document.getElementById("copyMsg").textContent="Signals reset to the November 2026 figures. Your ideas were kept."});
+document.getElementById("copy").addEventListener("click",()=>{
+  const S=window._sum,lines=[`Zeitgauge UK, ${new Date().toLocaleDateString("en-GB",{month:"long",year:"numeric"})}`,`Phase: ${S.phase}`,`Household health ${S.wi}, social stability ${S.si} (50 = normal)`,TECH[state.tech][0],"","Signals:"];
+  Object.values(SIGNALS).flat().forEach(g=>{const s=state.vals[g.id];lines.push(`- ${g.name}: ${s.v??"?"}${g.unit} (previous ${s.p??"?"}, normal ${g.mu})`)});
+  lines.push("","Top ideas:");state.ideas.map(x=>({...x,s:scoreIdea(x.r)})).sort((a,b)=>b.s-a.s).slice(0,5).forEach(x=>lines.push(`- ${x.s}: ${x.n}`));
+  const txt=lines.join("\n"),msg=document.getElementById("copyMsg");
+  const fb=()=>{msg.textContent="Copy was blocked on this device. Take a screenshot instead."};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>msg.textContent="Copied. Paste it into your notes or send it to Claude.",fb)}else fb();
+});
+renderSignals();fillInputs();calc();renderIdeas();
+</script>

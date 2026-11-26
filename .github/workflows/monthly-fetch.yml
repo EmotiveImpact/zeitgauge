@@ -1,0 +1,41 @@
+# Pull fresh official data on the 28th of each month and open a pull request
+# with the new readings file and dashboard data, so a person checks the numbers
+# before they land. Manual signals (GfK, trust and so on) are carried over and
+# still need updating by hand in the pull request.
+#
+# One-off setting: Settings > Actions > General > "Allow GitHub Actions to
+# create and approve pull requests" must be ticked.
+name: monthly-fetch
+on:
+  schedule:
+    - cron: "0 9 28 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: zeitgauge fetch --region uk
+      - run: zeitgauge fetch --region us || true
+      - run: zeitgauge score --region uk --web
+      - run: pytest -q
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="data/$(date +%Y-%m)"
+          git config user.name "zeitgauge-bot"
+          git config user.email "zeitgauge-bot@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data web/data.json
+          git commit -m "Monthly readings $(date +%Y-%m)" || exit 0
+          git push -u origin "$branch"
+          gh pr create --draft --title "Monthly readings $(date +%B\ %Y)" \
+            --body "Automatic fetch. Check each number against its source and update the manual signals before merging."

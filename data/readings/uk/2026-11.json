@@ -1,0 +1,22 @@
+{
+  "region": "uk",
+  "as_of": "2026-11-26",
+  "note": "Latest published readings at 26 November 2026. 'previous' is the reading before, where known.",
+  "readings": {
+    "gfk": {"latest": -22, "previous": -24, "period": "Nov 2026", "url": "https://nielseniq.com/global/en/news-center/2026/consumer-confidence-up-two-points-to-22-in-november"},
+    "gfk_pfin": {"latest": -5, "previous": -3, "period": "Nov 2026", "url": "https://nielseniq.com/global/en/news-center/2026/consumer-confidence-up-two-points-to-22-in-november"},
+    "boe_infl_fcst": {"latest": 5.0, "previous": null, "period": "Nov 2026 forecast for mid-2027", "url": "https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate"},
+    "cpi": {"latest": 3.6, "previous": 3.5, "period": "Oct 2026", "url": "https://www.ons.gov.uk/economy/inflationandpriceindices"},
+    "real_pay": {"latest": 0.2, "previous": null, "period": "Jul to Sep 2026", "url": "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/averageweeklyearningsingreatbritain/latest"},
+    "unemployment": {"latest": 4.6, "previous": 4.9, "period": "Jul to Sep 2026", "url": "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/november2026/pdf"},
+    "bank_rate": {"latest": 4.0, "previous": 3.75, "period": "5 Nov 2026", "url": "https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate"},
+    "dd_failure": {"latest": 2.41, "previous": 2.40, "period": "Oct 2026", "url": "https://www.ons.gov.uk/economy/economicoutputandproductivity/output/bulletins/economicactivityandsocialchangeintheukrealtimeindicators/latest"},
+    "retail_volume": {"latest": 0.8, "previous": null, "period": "Sep 2026", "url": "https://robomacro.com/notes/UK_Macro_Daily/UK_Macro_Daily_20261119.html"},
+    "saving_ratio": {"latest": 8.8, "previous": 8.6, "period": "Apr to Jun 2026", "url": "https://www.ons.gov.uk/economy/nationalaccounts/uksectoraccounts/bulletins/quarterlysectoraccounts/latest"},
+    "house_earnings": {"latest": 7.6, "previous": 7.8, "period": "2025", "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/housing/bulletins/housingaffordabilityinenglandandwales/2025"},
+    "youth_unemployment": {"latest": 15.1, "previous": 16.2, "period": "Jul to Sep 2026", "url": "https://commonslibrary.parliament.uk/research-briefings/sn05871/"},
+    "gilt_10y": {"latest": 5.37, "previous": null, "period": "19 Nov 2026", "url": "https://robomacro.com/notes/UK_Macro_Daily/UK_Macro_Daily_20261119.html"},
+    "trust_unrest": {"latest": -1, "previous": null, "period": "Nov 2026 judgement", "url": null}
+  },
+  "tech_wave": "install"
+}

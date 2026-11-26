@@ -1,0 +1,5 @@
+{"description": {"title": "CPI ANNUAL RATE 00: ALL ITEMS 2015=100", "cdid": "D7G7"},
+ "years": [{"date": "2025", "value": "3.4"}],
+ "quarters": [],
+ "months": [{"date": "2026 AUG", "value": "3.4"}, {"date": "2026 SEP", "value": "3.5"},
+            {"date": "2026 OCT", "value": "3.6"}, {"date": "2026 NOV", "value": ""}]}

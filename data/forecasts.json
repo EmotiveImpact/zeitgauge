@@ -1,0 +1,42 @@
+[
+  {
+    "id": "uk-2026-11-01",
+    "question": "GfK (NIQ) UK consumer confidence headline for May 2027 is above -18",
+    "probability": 0.4,
+    "made_on": "2026-11-26",
+    "resolves_by": "2027-05-31",
+    "region": "uk",
+    "outcome": null,
+    "basis": "gfk"
+  },
+  {
+    "id": "uk-2026-11-02",
+    "question": "Bank of England Bank Rate is below 4.0% on 30 June 2027",
+    "probability": 0.25,
+    "made_on": "2026-11-26",
+    "resolves_by": "2027-06-30",
+    "region": "uk",
+    "outcome": null,
+    "basis": "boe_infl_fcst"
+  },
+  {
+    "id": "uk-2026-11-03",
+    "question": "Zeitgauge places the UK in the 'recovery' phase in its June 2027 reading",
+    "probability": 0.3,
+    "made_on": "2026-11-26",
+    "resolves_by": "2027-06-30",
+    "region": "uk",
+    "outcome": null,
+    "basis": "cycle-clock"
+  },
+  {
+    "id": "uk-2026-11-04",
+    "question": "UK unemployment rate (ONS MGSX) is 5.0% or higher in the first release published after 1 June 2027",
+    "probability": 0.25,
+    "made_on": "2026-11-26",
+    "resolves_by": "2027-06-30",
+    "region": "uk",
+    "outcome": null,
+    "basis": "unemployment"
+  }
+]

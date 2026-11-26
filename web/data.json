@@ -1,0 +1,355 @@
+{
+  "regions": {
+    "uk": {
+      "region": "uk",
+      "as_of": "2026-11-26",
+      "phase": "downturn",
+      "headline": "Downturn: the squeeze, society under strain",
+      "levelling_off": false,
+      "stability": "strained",
+      "household": {
+        "index": 36,
+        "level": -0.7,
+        "momentum": -0.034,
+        "signals": [
+          {
+            "id": "gfk",
+            "name": "Consumer confidence (GfK)",
+            "latest": -22,
+            "previous": -24,
+            "normal": -11.0,
+            "score": -1.1,
+            "momentum": 0.2,
+            "band": "worse than normal",
+            "leading": true
+          },
+          {
+            "id": "gfk_pfin",
+            "name": "Personal finances, next 12 months (GfK)",
+            "latest": -5,
+            "previous": -3,
+            "normal": 0.0,
+            "score": -0.71,
+            "momentum": -0.29,
+            "band": "worse than normal",
+            "leading": true
+          },
+          {
+            "id": "boe_infl_fcst",
+            "name": "Inflation expected in a year (Bank of England)",
+            "latest": 5.0,
+            "previous": null,
+            "normal": 2.5,
+            "score": -1.67,
+            "momentum": null,
+            "band": "worse than normal",
+            "leading": true
+          },
+          {
+            "id": "cpi",
+            "name": "Inflation now (CPI)",
+            "latest": 3.6,
+            "previous": 3.5,
+            "normal": 2.5,
+            "score": -0.61,
+            "momentum": -0.06,
+            "band": "worse than normal",
+            "leading": false
+          },
+          {
+            "id": "real_pay",
+            "name": "Real pay growth (regular, after CPIH)",
+            "latest": 0.2,
+            "previous": null,
+            "normal": 0.8,
+            "score": -0.3,
+            "momentum": null,
+            "band": "near normal",
+            "leading": false
+          },
+          {
+            "id": "unemployment",
+            "name": "Unemployment",
+            "latest": 4.6,
+            "previous": 4.9,
+            "normal": 5.5,
+            "score": 0.6,
+            "momentum": 0.2,
+            "band": "better than normal",
+            "leading": false
+          },
+          {
+            "id": "bank_rate",
+            "name": "Bank Rate",
+            "latest": 4.0,
+            "previous": 3.75,
+            "normal": 2.5,
+            "score": -0.75,
+            "momentum": -0.12,
+            "band": "worse than normal",
+            "leading": false
+          },
+          {
+            "id": "dd_failure",
+            "name": "Direct Debit failure rate",
+            "latest": 2.41,
+            "previous": 2.4,
+            "normal": 2.3,
+            "score": -1.1,
+            "momentum": -0.1,
+            "band": "worse than normal",
+            "leading": false
+          },
+          {
+            "id": "retail_volume",
+            "name": "Retail sales volume, year on year",
+            "latest": 0.8,
+            "previous": null,
+            "normal": 2.0,
+            "score": -0.4,
+            "momentum": null,
+            "band": "near normal",
+            "leading": false
+          },
+          {
+            "id": "saving_ratio",
+            "name": "Household saving ratio (high = caution)",
+            "latest": 8.8,
+            "previous": 8.6,
+            "normal": 8.0,
+            "score": -0.27,
+            "momentum": -0.07,
+            "band": "near normal",
+            "leading": false
+          }
+        ]
+      },
+      "society": {
+        "index": 33,
+        "level": -0.854,
+        "momentum": 0.239,
+        "signals": [
+          {
+            "id": "house_earnings",
+            "name": "House price to earnings (England)",
+            "latest": 7.6,
+            "previous": 7.8,
+            "normal": 6.5,
+            "score": -0.61,
+            "momentum": 0.11,
+            "band": "worse than normal",
+            "leading": false
+          },
+          {
+            "id": "youth_unemployment",
+            "name": "Youth unemployment (16 to 24)",
+            "latest": 15.1,
+            "previous": 16.2,
+            "normal": 14.0,
+            "score": -0.37,
+            "momentum": 0.37,
+            "band": "near normal",
+            "leading": false
+          },
+          {
+            "id": "gilt_10y",
+            "name": "10-year gilt yield (state finance strain)",
+            "latest": 5.37,
+            "previous": null,
+            "normal": 3.5,
+            "score": -1.44,
+            "momentum": null,
+            "band": "worse than normal",
+            "leading": false
+          },
+          {
+            "id": "trust_unrest",
+            "name": "Trust and unrest, judgement (-2 to +2)",
+            "latest": -1,
+            "previous": null,
+            "normal": 0.0,
+            "score": -1.0,
+            "momentum": null,
+            "band": "worse than normal",
+            "leading": false
+          }
+        ]
+      },
+      "region_name": "United Kingdom",
+      "playbook": {
+        "phase": [
+          {
+            "feeling": "Small rewards",
+            "why": "Affordable treats that feel premium.",
+            "examples": "minis, press-on nails, at-home cafe and salon rituals"
+          },
+          {
+            "feeling": "Make do and mend",
+            "why": "Fix, cook and make at home.",
+            "examples": "repair kits, air fryer accessories, energy-saving home kits"
+          },
+          {
+            "feeling": "Money control",
+            "why": "Help people feel in charge of spending.",
+            "examples": "budgeting templates, resale tools, cheaper swaps"
+          }
+        ],
+        "overlay": [
+          {
+            "feeling": "Safety and self-reliance",
+            "why": "Trust is low, so people want to feel prepared.",
+            "examples": "home security, at-home health tests, power banks, savings products"
+          },
+          {
+            "feeling": "Comfort and nostalgia",
+            "why": "Familiar, warm things for an uneasy time.",
+            "examples": "heated throws, comfort food, retro and vinyl, pet care"
+          }
+        ],
+        "next_phase": "recovery",
+        "tech_wave": {
+          "phase": "Build and hype phase",
+          "advice": "Sell picks and shovels: templates, courses and tools that help ordinary people use the new technology."
+        }
+      },
+      "scenarios": {
+        "meta": {
+          "region": "uk",
+          "focal_question": "What should a small consumer brand launch in the UK over the next 12 to 18 months?",
+          "axis_1": "Inflation path: easing or sticky",
+          "axis_2": "Social fabric: holding or fraying",
+          "review": "Every six months, or straight after a shock",
+          "predetermined": [
+            "Most mortgages are fixed for two to five years, so past rate rises are still reaching households as deals end",
+            "The population is ageing: more over-65s, a smaller share of working age",
+            "AI tools are spreading fast whatever the economy does"
+          ]
+        },
+        "worlds": [
+          {
+            "id": "frayed",
+            "name": "Frayed",
+            "story": "Sticky prices meet falling trust. Protest, polarisation and anxiety grow. People spend on safety, comfort and control.",
+            "leans_towards": "downturn",
+            "lit": 4,
+            "known": 4,
+            "signposts": [
+              {
+                "label": "Inflation rising or stuck",
+                "lit": true,
+                "value": -0.06
+              },
+              {
+                "label": "Society lens strained",
+                "lit": true,
+                "value": -0.854
+              },
+              {
+                "label": "Trust falling or unrest rising",
+                "lit": true,
+                "value": -1.0
+              },
+              {
+                "label": "Housing far out of reach",
+                "lit": true,
+                "value": -0.61
+              }
+            ]
+          },
+          {
+            "id": "grind",
+            "name": "Grind",
+            "story": "Prices stay sticky and rates stay high, but society copes. A long, dull squeeze where value and small rewards win.",
+            "leans_towards": "downturn",
+            "lit": 3,
+            "known": 4,
+            "signposts": [
+              {
+                "label": "Inflation rising or stuck",
+                "lit": true,
+                "value": -0.06
+              },
+              {
+                "label": "No rate cut",
+                "lit": true,
+                "value": -0.12
+              },
+              {
+                "label": "Society lens improving",
+                "lit": true,
+                "value": 0.239
+              },
+              {
+                "label": "No sharp rise in unrest",
+                "lit": false,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "uneasy_calm",
+            "name": "Uneasy calm",
+            "story": "The economy improves on paper but trust keeps sliding. Spending recovers unevenly and comfort and belonging sell well.",
+            "leans_towards": "recovery",
+            "lit": 2,
+            "known": 4,
+            "signposts": [
+              {
+                "label": "Inflation falling",
+                "lit": false,
+                "value": -0.06
+              },
+              {
+                "label": "Household lens improving",
+                "lit": false,
+                "value": -0.034
+              },
+              {
+                "label": "Society lens strained",
+                "lit": true,
+                "value": -0.854
+              },
+              {
+                "label": "Trust falling or unrest rising",
+                "lit": true,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "thaw",
+            "name": "Thaw",
+            "story": "Inflation eases, the Bank cuts, real pay recovers and people slowly start treating themselves again. Trust holds.",
+            "leans_towards": "recovery",
+            "lit": 1,
+            "known": 4,
+            "signposts": [
+              {
+                "label": "Inflation falling",
+                "lit": false,
+                "value": -0.06
+              },
+              {
+                "label": "Bank Rate cut",
+                "lit": false,
+                "value": -0.12
+              },
+              {
+                "label": "Confidence rising",
+                "lit": true,
+                "value": 0.2
+              },
+              {
+                "label": "Society lens out of the strained zone",
+                "lit": false,
+                "value": -0.854
+              }
+            ]
+          }
+        ]
+      },
+      "readings_file": "data/readings/uk/2026-11.json"
+    }
+  },
+  "generated": "2026-11-26"
+}

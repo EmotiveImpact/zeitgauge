@@ -1,0 +1,185 @@
+# Zeitgauge region config: United Kingdom
+#
+# Each signal is scored against its long-run normal:
+#   score    = direction * (latest - normal) / swing, capped at +/-2.5
+#   momentum = direction * (latest - previous) / swing
+# direction = +1 when a higher value is better for households, -1 when worse.
+# weight 1.5 marks leading (forward-looking) signals.
+# "normal" and "swing" are estimates from long-run UK data. Refine them from
+# full series once the fetchers are running (see docs/algorithm.md).
+
+[region]
+id = "uk"
+name = "United Kingdom"
+currency = "GBP"
+
+[[signals]]
+id = "gfk"
+lens = "household"
+name = "Consumer confidence (GfK)"
+unit = ""
+normal = -11
+swing = 10
+direction = 1
+weight = 1.5
+leading = true
+source = "GfK Consumer Confidence Barometer"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "gfk_pfin"
+lens = "household"
+name = "Personal finances, next 12 months (GfK)"
+unit = ""
+normal = 0
+swing = 7
+direction = 1
+weight = 1.5
+leading = true
+source = "GfK sub-index"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "boe_infl_fcst"
+lens = "household"
+name = "Inflation expected in a year (Bank of England)"
+unit = "%"
+normal = 2.5
+swing = 1.5
+direction = -1
+weight = 1.5
+leading = true
+source = "Bank of England Monetary Policy Report"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "cpi"
+lens = "household"
+name = "Inflation now (CPI)"
+unit = "%"
+normal = 2.5
+swing = 1.8
+direction = -1
+weight = 1.0
+source = "ONS series D7G7"
+fetch = { kind = "ons", path = "/economy/inflationandpriceindices/timeseries/d7g7/mm23" }
+
+[[signals]]
+id = "real_pay"
+lens = "household"
+name = "Real pay growth (regular, after CPIH)"
+unit = "%"
+normal = 0.8
+swing = 2.0
+direction = 1
+weight = 1.0
+source = "ONS Average Weekly Earnings (X09 / EARN01)"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "unemployment"
+lens = "household"
+name = "Unemployment"
+unit = "%"
+normal = 5.5
+swing = 1.5
+direction = -1
+weight = 1.0
+source = "ONS series MGSX"
+fetch = { kind = "ons", path = "/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms" }
+
+[[signals]]
+id = "bank_rate"
+lens = "household"
+name = "Bank Rate"
+unit = "%"
+normal = 2.5
+swing = 2.0
+direction = -1
+weight = 1.0
+source = "Bank of England series IUMABEDR"
+fetch = { kind = "boe", series = "IUMABEDR" }
+
+[[signals]]
+id = "dd_failure"
+lens = "household"
+name = "Direct Debit failure rate"
+unit = "%"
+normal = 2.3
+swing = 0.1
+direction = -1
+weight = 1.0
+source = "ONS real-time indicators (Pay.UK and Vocalink)"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "retail_volume"
+lens = "household"
+name = "Retail sales volume, year on year"
+unit = "%"
+normal = 2.0
+swing = 3.0
+direction = 1
+weight = 1.0
+source = "ONS retail sales"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "saving_ratio"
+lens = "household"
+name = "Household saving ratio (high = caution)"
+unit = "%"
+normal = 8.0
+swing = 3.0
+direction = -1
+weight = 1.0
+source = "ONS series NRJS"
+fetch = { kind = "ons", path = "/economy/grossdomesticproductgdp/timeseries/nrjs/ukea" }
+
+[[signals]]
+id = "house_earnings"
+lens = "society"
+name = "House price to earnings (England)"
+unit = "x"
+normal = 6.5
+swing = 1.8
+direction = -1
+weight = 1.0
+source = "ONS housing affordability"
+fetch = { kind = "manual" }
+
+[[signals]]
+id = "youth_unemployment"
+lens = "society"
+name = "Youth unemployment (16 to 24)"
+unit = "%"
+normal = 14
+swing = 3
+direction = -1
+weight = 1.0
+source = "ONS series MGWY"
+fetch = { kind = "ons", path = "/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgwy/lms" }
+
+[[signals]]
+id = "gilt_10y"
+lens = "society"
+name = "10-year gilt yield (state finance strain)"
+unit = "%"
+normal = 3.5
+swing = 1.3
+direction = -1
+weight = 1.0
+source = "Bank of England series IUMMNPY (monthly average)"
+fetch = { kind = "boe", series = "IUMMNPY" }
+
+[[signals]]
+id = "trust_unrest"
+lens = "society"
+name = "Trust and unrest, judgement (-2 to +2)"
+unit = ""
+normal = 0
+swing = 1
+direction = 1
+weight = 1.0
+source = "Analyst judgement from trust surveys, strikes and news (later: GDELT tone, ACLED)"
+fetch = { kind = "manual" }
