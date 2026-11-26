@@ -31,12 +31,18 @@ Licences matter if Zeitgauge becomes a paid product. Licence warnings are marked
   - the Edelman Trust Barometer
   - news of protests
 
+**Daily pulse** (see `docs/pulse.md`)
+
+- **Economic Policy Uncertainty, UK daily.** policyuncertainty.com CSV, CC BY 4.0 (credit Baker, Bloom and Davis). Auto (`epu`).
+- **GDELT news tone and coverage share.** Free, no key, updated every 15 minutes. Auto (`gdelt`).
+- **Wikipedia pageviews.** Free, no key, daily. Auto (`wikipedia`).
+- **10-year gilt yield, daily.** Bank of England IADB, code IUDMNPY to check. Auto (`boe`).
+- **Google Trends, GB.** Optional, through trendspyg. Off by default.
+
 **Next to add**
 
-- Economic Policy Uncertainty index, UK (policyuncertainty.com).
 - Barclays or BRC consumer spending (press releases).
 - Insolvency Service individual insolvencies (monthly).
-- Google Trends, GB.
 
 ---
 
@@ -61,12 +67,18 @@ FRED series need no API key on the public CSV endpoint. Register a free key for 
 - **10-year Treasury yield.** FRED DGS10. Auto (`fred`).
 - **Trust in federal government.** Pew Research Center. Manual.
 
+**Daily pulse**
+
+- **Economic Policy Uncertainty, US daily.** FRED USEPUINDXD. Auto (`fred`).
+- **VIX.** FRED VIXCLS **(licence: Cboe owns the index; check terms before showing raw values to paying users)**. Auto (`fred`).
+- **Yield curve, daily.** FRED T10Y2Y. Auto (`fred`).
+- **GDELT news** and **Wikipedia pageviews**, as for the UK.
+
 **Next to add**
 
 - New York Fed Survey of Consumer Expectations (free, monthly).
 - New York Fed Household Debt and Credit Report (quarterly).
 - Gallup confidence in institutions (annual).
-- Economic Policy Uncertainty index, US.
 - Conference Board consumer confidence **(licence: paid)**.
 
 ---
@@ -78,6 +90,7 @@ FRED series need no API key on the public CSV endpoint. Register a free key for 
 - **Our World in Data.** Clean long-run series under CC BY.
 - **GDELT.** Free global news events and tone. Useful for unrest and contagion between regions.
 - **ACLED.** Protest and political violence events **(licence: free for non-commercial use, paid for commercial use)**.
+- **Social media.** Bluesky and YouTube (free), X (pay per use), Reddit (commercial agreement needed), TikTok (no commercial route). Details and prices in `docs/social.md`.
 - **Fragile States Index.** Annual country scores.
 - **World Values Survey.** Cultural values by country, in waves about five years apart.
 - **Seshat Global History Databank.** Historical data on societies, used by Turchin's group **(licence: data is CC BY-NC-SA, non-commercial only)**.

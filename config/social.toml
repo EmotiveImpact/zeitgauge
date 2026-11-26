@@ -1,0 +1,101 @@
+# Social media signals for Zeitgauge.
+#
+# Every platform is OFF until both of these are true:
+#   1. enabled = true for that platform below
+#   2. its keys are saved as GitHub secrets
+#      (repository Settings > Secrets and variables > Actions > New secret)
+# Run `zeitgauge social` to see what is on, what it costs and what is missing.
+#
+# Only official APIs are used. Nothing here scrapes a website or works around a
+# platform's rules. Doing that breaks their terms, gets accounts banned and puts
+# a paid product at legal risk.
+#
+# What it measures: how many posts a day mention money-worry terms. That count
+# joins the daily pulse as one extra signal per platform, at half weight,
+# because social chatter is noisy. Each platform needs 37 days of counts before
+# it starts to count, so switch on early.
+#
+# Prices checked 26 November 2026. Check again before switching on.
+
+[bluesky]
+enabled = false
+available = true
+label = "Bluesky"
+cost = "Free."
+secrets = ["BLUESKY_HANDLE", "BLUESKY_APP_PASSWORD"]
+how_to = "In the Bluesky app: Settings > Privacy and security > App passwords > Add. Use a fresh app password, never your main one."
+note = "Search needs a signed-in account (the public host refuses search). There is no location filter, so the terms lean on British wording."
+weight = 0.5
+lang = "en"
+max_pages = 5   # 100 posts a page. A term that hits the limit is marked as capped.
+pds = "https://bsky.social"
+
+[bluesky.uk]
+terms = ['"cost of living"', "skint", '"food bank"', "\"can't afford\""]
+
+[bluesky.us]
+terms = ['"cost of living"', "\"can't afford\"", "layoffs", '"paycheck to paycheck"']
+
+[youtube]
+enabled = false
+available = true
+label = "YouTube"
+cost = "Free: 10,000 quota units a day. Each search page costs 100 units, so about 100 searches a day."
+secrets = ["YOUTUBE_API_KEY"]
+how_to = "Google Cloud console > new project > enable YouTube Data API v3 > Credentials > Create API key. Restrict the key to that API."
+note = "Counts new videos a day that match each term. regionCode means videos watchable in that country, not made there."
+weight = 0.5
+max_pages = 1
+
+[youtube.uk]
+region_code = "GB"
+terms = ["cost of living", "budget meals", "side hustle uk", "money saving tips"]
+
+[youtube.us]
+region_code = "US"
+terms = ["cost of living", "budget meals", "side hustle", "paycheck to paycheck"]
+
+[x]
+enabled = false
+available = true
+label = "X"
+cost = "Pay per use, no subscription: about $0.005 per count request and $0.005 per post read. Zeitgauge only asks for counts, so the daily signal costs about $0.15 a month."
+secrets = ["X_BEARER_TOKEN"]
+how_to = "console.x.com > create a project and app > add credit > Keys and tokens > Bearer Token."
+note = "Counts posts per day for one combined query. The first run fills in the last 7 days."
+weight = 0.5
+cost_per_request_usd = 0.005
+monthly_budget_usd = 5.0   # Zeitgauge stops calling X once this month's spend reaches it
+hourly_alerts = false      # true adds an hourly spike check on the same query, about $3.70 a month per region
+
+[x.uk]
+query = "(\"cost of living\" OR skint OR \"food bank\" OR \"can't afford\") lang:en -is:retweet"
+
+[x.us]
+query = "(\"cost of living\" OR \"can't afford\" OR layoffs OR \"paycheck to paycheck\") lang:en -is:retweet"
+
+[reddit]
+enabled = false
+available = true
+label = "Reddit"
+cost = "The free tier is for non-commercial use only. Commercial use needs a signed agreement, and Reddit does not publish the price."
+secrets = ["REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET"]
+how_to = "Apply through Reddit's developer platform and get written approval for this use before switching on."
+note = "Reddit stopped approving new public API requests on 31 October 2026 and plans to end public access in March 2027. Only worth it with a commercial agreement."
+approved_use = false   # set to true only once Reddit has approved this use in writing
+weight = 0.5
+
+[reddit.uk]
+subreddits = ["UKPersonalFinance", "CasualUK"]
+terms = ["skint", "redundancy", '"cost of living"']
+
+[reddit.us]
+subreddits = ["personalfinance", "povertyfinance"]
+terms = ["layoff", '"cost of living"', "\"can't afford\""]
+
+[tiktok]
+enabled = false
+available = false
+label = "TikTok"
+cost = "No official route to trend data for commercial users."
+note = "The Research API is for non-profit academic research only. The Commercial Content API covers EU ads only. Creative Center trend pages have no official API. If you become a verified TikTok advertiser, ask TikTok about discovery data through the API for Business and an adapter can be added then."

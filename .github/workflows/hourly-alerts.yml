@@ -1,0 +1,66 @@
+# Every hour: check the alert watches in config/pulse/<region>.toml for a
+# sudden jump in news coverage (and in X posts, if switched on), then tell
+# someone. Commits only when something changed.
+#
+# Ways to hear about an alert (set any you like, under repository Settings >
+# Secrets and variables > Actions):
+#   GitHub issue   on by default; set the variable ALERT_ISSUES to false to stop
+#   secret NTFY_TOPIC        phone push via the free ntfy app (use a long random name)
+#   secret NTFY_SERVER       optional, defaults to https://ntfy.sh
+#   secret ALERT_WEBHOOK_URL Slack, Discord or any service that takes JSON
+#
+# Cost: about one Actions minute a run, so roughly 750 of the 2,000 free
+# minutes a month on a private repository (free on a public one).
+name: hourly-alerts
+on:
+  schedule:
+    - cron: "17 * * * *" # 17 minutes past each hour, away from the busy top of the hour
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: zeitgauge-data
+  cancel-in-progress: false
+jobs:
+  alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ZEITGAUGE_CONTACT: ${{ vars.ZEITGAUGE_CONTACT }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+      ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Check for spikes
+        run: |
+          zeitgauge alerts --region uk --notify --summary "$RUNNER_TEMP/alerts-uk.md"
+          zeitgauge alerts --region us --notify --summary "$RUNNER_TEMP/alerts-us.md" || echo "US check incomplete"
+      - name: Open an issue for new alerts
+        if: vars.ALERT_ISSUES != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in "$RUNNER_TEMP"/alerts-*.md; do
+            [ -f "$f" ] || continue
+            region=$(basename "$f" .md | cut -d- -f2 | tr '[:lower:]' '[:upper:]')
+            gh issue create --title "Zeitgauge alert ($region), $(date -u '+%d %b %H:%M') UTC" --body-file "$f"
+          done
+      - name: Commit results
+        run: |
+          git config user.name "zeitgauge-bot"
+          git config user.email "zeitgauge-bot@users.noreply.github.com"
+          for p in data/alerts web/alerts.json data/social/spend.json; do if [ -e "$p" ]; then git add "$p"; fi; done
+          git diff --cached --quiet && exit 0
+          git commit -m "Alerts $(date -u '+%Y-%m-%d %H:%M')"
+          for i in 1 2 3 4; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 15))
+          done
+          exit 1
