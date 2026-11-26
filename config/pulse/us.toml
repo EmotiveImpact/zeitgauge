@@ -1,0 +1,84 @@
+# Zeitgauge daily pulse: United States. Same method as config/pulse/uk.toml.
+
+[pulse]
+region = "us"
+recent_days = 7
+baseline_days = 120
+min_baseline = 30
+
+[[signals]]
+id = "epu"
+name = "Policy uncertainty in the papers"
+lens = "society"
+direction = -1
+weight = 1.0
+source = "Baker, Bloom and Davis via FRED USEPUINDXD (CC BY 4.0)"
+fetch = { kind = "fred", series = "USEPUINDXD" }
+
+[[signals]]
+id = "vix"
+name = "Stock market fear gauge (VIX)"
+lens = "household"
+direction = -1
+weight = 1.0
+# Cboe owns the VIX. Fine to read for our own scoring; check terms before
+# showing the raw number to paying users.
+source = "Cboe VIX via FRED VIXCLS"
+fetch = { kind = "fred", series = "VIXCLS" }
+
+[[signals]]
+id = "yield_curve"
+name = "Yield curve, 10-year minus 2-year, daily"
+lens = "household"
+direction = 1
+weight = 0.75
+source = "FRED T10Y2Y"
+fetch = { kind = "fred", series = "T10Y2Y" }
+
+[[signals]]
+id = "news_tone_money"
+name = "Tone of US news about money and jobs"
+lens = "household"
+direction = 1
+weight = 1.0
+source = "GDELT DOC 2.0 (average tone)"
+fetch = { kind = "gdelt", mode = "timelinetone", timespan = "150d", query = "(economy OR prices OR wages OR jobs) sourcecountry:US sourcelang:english" }
+
+[[signals]]
+id = "news_squeeze"
+name = "Share of US news about the squeeze"
+lens = "household"
+direction = -1
+weight = 1.0
+source = "GDELT DOC 2.0 (share of all coverage)"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "150d", query = "(\"cost of living\" OR \"food bank\" OR layoffs OR \"credit card debt\") sourcecountry:US" }
+
+[[signals]]
+id = "wiki_worry"
+name = "People reading up on recession and layoffs"
+lens = "household"
+direction = -1
+weight = 0.75
+source = "Wikipedia pageviews (English Wikipedia, read worldwide)"
+fetch = { kind = "wikipedia", articles = ["Recession", "Cost-of-living crisis", "Layoff", "Stagflation"] }
+
+[alerts]
+z = 3.0
+ratio = 2.0
+cooldown_hours = 12
+recent_points = 2
+
+[[alerts.watch]]
+id = "layoffs"
+name = "Job cuts"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(layoffs OR \"job cuts\" OR \"mass layoff\") sourcecountry:US" }
+
+[[alerts.watch]]
+id = "tariffs"
+name = "Tariffs and trade"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(tariff OR tariffs OR \"trade war\") sourcecountry:US" }
+
+[[alerts.watch]]
+id = "markets"
+name = "Market or banking stress"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(\"stock market crash\" OR \"bank run\" OR \"bank failure\" OR selloff) sourcecountry:US" }

@@ -1,0 +1,62 @@
+# Every morning: count social posts (only on platforms switched on in
+# config/social.toml), read the daily pulse for the UK and the US, and commit
+# the results straight to main.
+#
+# The monthly verdict still goes through a pull request so a person checks it.
+# The pulse is a fast automatic read and never changes the monthly verdict, so
+# it commits directly. If main is protected, allow github-actions[bot] to push
+# or this step will fail.
+#
+# Optional settings (repository Settings > Secrets and variables > Actions):
+#   variable ZEITGAUGE_CONTACT   a URL or address some data sites ask bots to give
+#   secrets  BLUESKY_HANDLE, BLUESKY_APP_PASSWORD, YOUTUBE_API_KEY,
+#            X_BEARER_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET
+#            (only needed for platforms you switch on)
+name: daily-pulse
+on:
+  schedule:
+    - cron: "23 6 * * *" # 06:23 UTC: 06:23 UK time in winter, 07:23 in summer
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: zeitgauge-data
+  cancel-in-progress: false
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ZEITGAUGE_CONTACT: ${{ vars.ZEITGAUGE_CONTACT }}
+      BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+      BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Count social posts (switched-on platforms only)
+        run: |
+          zeitgauge social --collect --region uk
+          zeitgauge social --collect --region us
+      - name: Daily pulse
+        run: |
+          zeitgauge pulse --region uk --web
+          zeitgauge pulse --region us --web || echo "US pulse incomplete today"
+      - name: Commit results
+        run: |
+          git config user.name "zeitgauge-bot"
+          git config user.email "zeitgauge-bot@users.noreply.github.com"
+          for p in data/pulse data/social web/pulse.json; do if [ -e "$p" ]; then git add "$p"; fi; done
+          git diff --cached --quiet && exit 0
+          git commit -m "Daily pulse $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 15))
+          done
+          exit 1

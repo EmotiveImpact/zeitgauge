@@ -1,0 +1,122 @@
+# Zeitgauge daily pulse: United Kingdom
+#
+# The monthly verdict uses official statistics and moves slowly on purpose.
+# The pulse reads fast public signals every morning and asks one question:
+# is this week better or worse than the last four months?
+#
+#   50 = the same as the last four months
+#   above 56 = improving, below 44 = worsening
+#
+# Each signal: this week's average compared with the spread of weekly averages
+# over the baseline window, using median and MAD so one wild day can't swing it.
+# direction = +1 when a higher value is good for households, -1 when bad.
+# See docs/pulse.md.
+
+[pulse]
+region = "uk"
+recent_days = 7
+baseline_days = 120
+min_baseline = 30
+
+[[signals]]
+id = "epu"
+name = "Policy uncertainty in the papers"
+lens = "society"
+direction = -1
+weight = 1.0
+source = "Baker, Bloom and Davis, policyuncertainty.com (CC BY 4.0)"
+fetch = { kind = "epu", url = "https://www.policyuncertainty.com/media/UK_Daily_Policy_Data.csv" }
+
+[[signals]]
+id = "news_tone_money"
+name = "Tone of UK news about money and jobs"
+lens = "household"
+direction = 1
+weight = 1.0
+source = "GDELT DOC 2.0 (average tone)"
+fetch = { kind = "gdelt", mode = "timelinetone", timespan = "150d", query = "(economy OR prices OR wages OR jobs) sourcecountry:UK sourcelang:english" }
+
+[[signals]]
+id = "news_squeeze"
+name = "Share of UK news about the squeeze"
+lens = "household"
+direction = -1
+weight = 1.0
+source = "GDELT DOC 2.0 (share of all coverage)"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "150d", query = "(\"cost of living\" OR \"food bank\" OR redundancies OR \"energy bills\") sourcecountry:UK" }
+
+[[signals]]
+id = "news_unrest"
+name = "Share of UK news about strikes and protest"
+lens = "society"
+direction = -1
+weight = 0.75
+source = "GDELT DOC 2.0 (share of all coverage)"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "150d", query = "(strike OR protest OR riot OR walkout) sourcecountry:UK" }
+
+[[signals]]
+id = "wiki_worry"
+name = "People reading up on recession and layoffs"
+lens = "household"
+direction = -1
+weight = 0.75
+source = "Wikipedia pageviews (English Wikipedia, read worldwide)"
+fetch = { kind = "wikipedia", articles = ["Recession", "Cost-of-living crisis", "Layoff", "Stagflation"] }
+
+[[signals]]
+id = "gilt_10y"
+name = "10-year gilt yield, daily"
+lens = "society"
+direction = -1
+weight = 0.75
+# IUDMNPY should be the daily twin of the monthly IUMMNPY. Check it on the
+# Bank of England database after the first run.
+source = "Bank of England database, IUDMNPY (code to check)"
+fetch = { kind = "boe", series = "IUDMNPY" }
+
+# Google Trends is optional because it needs an extra package and can be rate
+# limited. Install with: pip install -e ".[trends]" and set enabled = true.
+[[signals]]
+id = "search_hardship"
+name = "Searches for help with money"
+lens = "household"
+direction = -1
+weight = 0.75
+enabled = false
+source = "Google Trends, GB (via trendspyg)"
+fetch = { kind = "trends", geo = "GB", keywords = ["food bank", "debt help", "cheap meals"] }
+
+# Hourly alerts: sudden jumps in news coverage. Each watch compares the last
+# two hours with the past week (hourly points). An alert fires when coverage is
+# at least `ratio` times its usual level and `z` robust deviations above it,
+# then stays quiet for `cooldown_hours`.
+[alerts]
+z = 3.0
+ratio = 2.0
+cooldown_hours = 12
+recent_points = 2
+
+[[alerts.watch]]
+id = "layoffs"
+name = "Job cuts"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(redundancies OR layoffs OR \"job cuts\") sourcecountry:UK" }
+
+[[alerts.watch]]
+id = "prices"
+name = "Price shock"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(\"price cap\" OR \"energy bills\" OR \"food prices\" OR \"petrol prices\") sourcecountry:UK" }
+
+[[alerts.watch]]
+id = "unrest"
+name = "Strikes, protest or unrest"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(riot OR \"general strike\" OR protest OR unrest) sourcecountry:UK" }
+
+[[alerts.watch]]
+id = "money"
+name = "Rates, banks or markets"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(\"Bank of England\" OR \"interest rates\" OR \"gilt yields\" OR \"bank collapse\") sourcecountry:UK" }
+
+[[alerts.watch]]
+id = "budget"
+name = "Tax and budget news"
+fetch = { kind = "gdelt", mode = "timelinevol", timespan = "7d", query = "(budget OR \"tax rise\" OR \"spending cuts\") sourcecountry:UK" }
