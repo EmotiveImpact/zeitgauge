@@ -100,6 +100,7 @@ zeitgauge pulse --region uk --dry-run   # print today's pulse, write nothing
 zeitgauge pulse --region uk --web       # save it and update web/pulse.json
 zeitgauge alerts --region uk --dry-run  # check the watches now
 zeitgauge social                        # which social platforms are on
+zeitgauge brief --region uk --dry-run   # the weekly brief (docs/brief.md)
 ```
 
 **Schedules** (in `.github/workflows/`)
@@ -108,7 +109,7 @@ zeitgauge social                        # which social platforms are on
 - `hourly-alerts.yml` runs at 17 minutes past each hour. It commits only when something changed.
 - Both share a lock, so they never push at the same moment.
 
-**Actions minutes:** the hourly job uses about one minute a run, roughly 750 a month. With the daily, monthly and test runs, the total is about 850 of the 2,000 free minutes a month on a private repository. A public repository has no limit.
+**Actions minutes:** the hourly job uses about one minute a run, roughly 750 a month. With the daily, weekly, monthly and test runs, the total is about 870 of the 2,000 free minutes a month on a private repository. A public repository has no limit.
 
 If `main` is protected, allow `github-actions[bot]` to push, or the commit steps will fail.
 

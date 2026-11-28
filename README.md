@@ -17,6 +17,7 @@ zeitgauge brier                      # how good have our forecasts been?
 zeitgauge pulse --region uk --dry-run  # today's pulse from fast public signals
 zeitgauge alerts --region uk --dry-run # any sudden spikes in the news right now?
 zeitgauge social                     # which social platforms are on, and what they cost
+zeitgauge brief --region uk --dry-run  # this week's 'what people need right now' brief
 pytest -q
 ```
 
@@ -27,6 +28,8 @@ Open `web/index.html` on a phone or in a browser for the dashboard.
 - **Monthly verdict:** official statistics, checked by a person in a pull request.
 - **Daily pulse:** news tone, policy uncertainty, what people read up on and market gauges, every morning. It says whether this week is better or worse than the last four months, and what that hints about the next monthly verdict.
 - **Hourly alerts:** a sudden jump in coverage of job cuts, prices, unrest, rates or the budget sends a GitHub issue, a phone push (ntfy) or a webhook.
+
+Every Monday the three speeds come together in a **weekly brief**: the needs that are strongest right now, the signals behind each one, two product ideas per need with a cheap test, and whether each need still works when the cycle turns. Every need it puts forward becomes a dated call, checked 13 weeks later. See `docs/brief.md`.
 
 Social media (Bluesky, YouTube, X, Reddit) can join the pulse one platform at a time. Everything is off until you switch it on. See `docs/pulse.md` and `docs/social.md`.
 
@@ -40,6 +43,7 @@ Social media (Bluesky, YouTube, X, Reddit) can join the pulse one platform at a 
 - `forecasting.py`: a forecast log with Brier scores, broken down by the signal or framework behind each call.
 - `spillover.py`: links between regions through money, trade and culture, with delays.
 - `indicators/`: Sahm rule and a light Political Stress Index (after Turchin).
+- `brief.py`: the weekly brief, which scores each need from its driving signals and logs a checkable call.
 - `pulse.py`: the daily pulse, scored against the last four months with a noise-calibrated combined score.
 - `alerts.py`: hourly spike detection with cooldowns, plus ntfy, webhook and GitHub issue delivery.
 - `social/`: official-API adapters for Bluesky, YouTube, X and Reddit, a switch per platform and a monthly budget for paid ones.
@@ -50,9 +54,10 @@ Social media (Bluesky, YouTube, X, Reddit) can join the pulse one platform at a 
 - `config/scenarios/`: one TOML file of scenarios per region.
 - `config/pulse/`: daily pulse signals and hourly alert watches per region.
 - `config/social.toml`: the social media switches, costs and search terms.
+- `config/needs.toml`: the needs catalogue: what people need, which signals drive each need, and product ideas to test.
 - `data/readings/`: one JSON file per region per month.
 - `data/forecasts.json`: the forecast log.
-- `data/pulse/`, `data/alerts/`, `data/social/`: written by the daily and hourly runs.
+- `data/pulse/`, `data/alerts/`, `data/social/`, `data/brief/`: written by the daily, hourly and weekly runs.
 
 **Docs** (`docs/`)
 - `vision.md`: what this is for, and the roadmap.
@@ -64,6 +69,7 @@ Social media (Bluesky, YouTube, X, Reddit) can join the pulse one platform at a 
 - `cross-region.md`: how regions affect each other, now and in version 2.
 - `pulse.md`: the daily pulse and hourly alerts, how they score and where alerts go.
 - `social.md`: what each social platform costs and how to switch it on.
+- `brief.md`: the weekly brief, how needs are scored and how its calls are checked.
 
 ## Monthly routine
 
@@ -73,12 +79,13 @@ Social media (Bluesky, YouTube, X, Reddit) can join the pulse one platform at a 
 4. Write three to five forecasts in `data/forecasts.json`, and resolve any that are due.
 5. Merge.
 
-## Daily and hourly
+## Daily, hourly and weekly
 
-These run on their own once merged (`.github/workflows/daily-pulse.yml` and `hourly-alerts.yml`):
+These run on their own once merged (`.github/workflows/daily-pulse.yml`, `hourly-alerts.yml` and `weekly-brief.yml`):
 
 - Every morning at 06:23 UTC the pulse is saved to `data/pulse/` and `web/pulse.json`.
 - Every hour at 17 minutes past, the alert watches are checked. New alerts open a GitHub issue by default.
+- Every Monday at 07:07 UTC the weekly brief is posted as a GitHub issue and saved to `data/brief/` and `web/brief.json`.
 - Optional: add the secret `NTFY_TOPIC` for phone pushes, or `ALERT_WEBHOOK_URL` for Slack or Discord.
 
 ## Status and honesty notes

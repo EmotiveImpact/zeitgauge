@@ -1,0 +1,74 @@
+# Every Monday morning: write the "what people need right now" brief for each
+# region with monthly readings, log this week's calls, settle any calls that
+# have come due, and post the brief as a GitHub issue so it reaches your phone.
+#
+# Runs after the daily pulse (06:23 UTC) so it uses that morning's pulse.
+# Commits straight to main, like the pulse. If main is protected, allow
+# github-actions[bot] to push or the commit step will fail.
+#
+# Optional settings (repository Settings > Secrets and variables > Actions):
+#   variable BRIEF_ISSUES   set to false to stop the weekly issue
+#   secret   NTFY_TOPIC     also sends a short phone push with the top needs
+name: weekly-brief
+on:
+  schedule:
+    - cron: "7 7 * * 1" # Mondays 07:07 UTC: 07:07 UK time in winter, 08:07 in summer
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: zeitgauge-data
+  cancel-in-progress: false
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ZEITGAUGE_CONTACT: ${{ vars.ZEITGAUGE_CONTACT }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Google Trends settles the calls. If that package will not install, the
+      # brief still runs and the checks wait for next week.
+      - run: pip install -e ".[trends]" || pip install -e .
+      - name: Write the briefs
+        run: |
+          zeitgauge brief --region uk --web --log-calls --check
+          zeitgauge brief --region us --web --log-calls --check || echo "No US brief this week"
+      - name: Open an issue with each brief
+        if: vars.BRIEF_ISSUES != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in data/brief/*/latest.md; do
+            [ -f "$f" ] || continue
+            region=$(basename "$(dirname "$f")")
+            [ "$(jq -r .date "data/brief/$region/latest.json")" = "$(date -u +%F)" ] || continue
+            gh issue create --title "What people need right now ($(echo "$region" | tr '[:lower:]' '[:upper:]')), week of $(date -u '+%d %b %Y')" --body-file "$f"
+          done
+      - name: Phone push
+        if: env.NTFY_TOPIC != ''
+        run: |
+          for j in data/brief/*/latest.json; do
+            [ -f "$j" ] || continue
+            [ "$(jq -r .date "$j")" = "$(date -u +%F)" ] || continue
+            msg=$(jq -r '"Top needs: " + ([.needs[].name] | join(", "))' "$j")
+            curl -fsS -H "Title: Zeitgauge weekly brief ($(jq -r .region_name "$j"))" -d "$msg" "${NTFY_SERVER:-https://ntfy.sh}/$NTFY_TOPIC" || true
+          done
+      - name: Commit results
+        run: |
+          git config user.name "zeitgauge-bot"
+          git config user.email "zeitgauge-bot@users.noreply.github.com"
+          for p in data/brief web/brief.json data/forecasts.json; do if [ -e "$p" ]; then git add "$p"; fi; done
+          git diff --cached --quiet && exit 0
+          git commit -m "Weekly brief $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 15))
+          done
+          exit 1

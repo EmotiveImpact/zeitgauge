@@ -7,6 +7,7 @@
   python -m zeitgauge pulse --region uk        the daily pulse from fast public signals
   python -m zeitgauge alerts --region uk       check for sudden spikes (run hourly)
   python -m zeitgauge social                   which social platforms are on, and their cost
+  python -m zeitgauge brief --region uk        this week's 'what people need right now' brief
 """
 
 from __future__ import annotations
@@ -19,13 +20,14 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from .config import READINGS_DIR, ROOT, load_readings, load_region, latest_readings_path
-from .forecasting import brier, brier_by, load_log
+from .forecasting import brier, brier_by, load_log, save_log
 from .playbook import playbook
 from .scenarios import load_scenarios, signpost_status
 from .scoring import score_region
 
 WEB_DATA = ROOT / "web" / "data.json"
 WEB_PULSE = ROOT / "web" / "pulse.json"
+WEB_BRIEF = ROOT / "web" / "brief.json"
 FORECAST_LOG = ROOT / "data" / "forecasts.json"
 
 
@@ -326,6 +328,43 @@ def cmd_social(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------- weekly brief
+
+def cmd_brief(args: argparse.Namespace) -> int:
+    from . import brief as br
+    today = date.fromisoformat(args.date) if args.date else date.today()
+    try:
+        report = build_report(args.region)
+    except FileNotFoundError:
+        print(f"No monthly readings for '{args.region}' yet, so there is no brief to write.", file=sys.stderr)
+        return 1
+    log_path = Path(args.log)
+    log = load_log(log_path)
+    checked = br.resolve_calls(log, today) if args.check else []
+    brief = br.build_brief(report, br.load_needs(), br.load_pulse_latest(args.region, today),
+                           br.load_recent_alerts(args.region, today), today=today, calls=log)
+    brief["checked"] = checked
+    new = [] if args.dry_run or not args.log_calls else br.make_calls(brief)
+    brief["calls_logged"] = [f.id for f in new]
+    markdown = br.render_markdown(brief)
+    print(markdown)
+    if args.dry_run:
+        return 0
+    if new or any("outcome" in c for c in checked):
+        save_log(log_path, log + new)
+    folder = br.save_brief(brief, markdown)
+    wrote = [str(folder.relative_to(ROOT)) if folder.is_relative_to(ROOT) else str(folder)]
+    if args.web:
+        existing = json.loads(WEB_BRIEF.read_text(encoding="utf-8")) if WEB_BRIEF.exists() else {}
+        existing.setdefault("regions", {})[args.region] = brief
+        existing["generated"] = brief["date"]
+        WEB_BRIEF.parent.mkdir(parents=True, exist_ok=True)
+        WEB_BRIEF.write_text(json.dumps(existing, indent=2) + "\n", encoding="utf-8")
+        wrote.append(str(WEB_BRIEF.relative_to(ROOT)) if WEB_BRIEF.is_relative_to(ROOT) else str(WEB_BRIEF))
+    print(f"Wrote {' and '.join(wrote)}" + (f"; logged {len(new)} new calls" if new else ""), file=sys.stderr)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="zeitgauge", description="Read the mood of a region and suggest what to build.")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -364,6 +403,16 @@ def main(argv: list[str] | None = None) -> int:
     so.add_argument("--region", default="uk")
     so.add_argument("--day", help="day to count, YYYY-MM-DD (default: yesterday, UTC)")
     so.set_defaults(func=cmd_social)
+
+    br = sub.add_parser("brief", help="weekly brief: what people need right now, and what to build")
+    br.add_argument("--region", default="uk")
+    br.add_argument("--web", action="store_true", help="also write web/brief.json")
+    br.add_argument("--log-calls", action="store_true", help="add this week's calls to the forecast log")
+    br.add_argument("--check", action="store_true", help="settle calls that have come due (needs .[trends])")
+    br.add_argument("--log", default=str(FORECAST_LOG))
+    br.add_argument("--date", help="pretend today is this date, YYYY-MM-DD")
+    br.add_argument("--dry-run", action="store_true", help="print only, write nothing")
+    br.set_defaults(func=cmd_brief)
 
     args = p.parse_args(argv)
     return args.func(args)
