@@ -242,7 +242,8 @@ def test_brief_command_writes_files_and_logs_calls(tmp_path, monkeypatch, capsys
     monkeypatch.setattr(br, "ALERT_DATA_DIR", tmp_path / "alerts")
     monkeypatch.setattr(cli, "WEB_BRIEF", tmp_path / "web" / "brief.json")
     log = tmp_path / "forecasts.json"
-    save_log(log, load_log(ROOT / "data" / "forecasts.json"))
+    # start from the hand-written calls only, so the real log's open need calls do not interfere
+    save_log(log, [f for f in load_log(ROOT / "data" / "forecasts.json") if not f.basis.startswith("need:")])
     before = len(load_log(log))
     args = ["brief", "--region", "uk", "--web", "--log-calls", "--log", str(log), "--date", "2026-11-30"]
     assert main(args) == 0
