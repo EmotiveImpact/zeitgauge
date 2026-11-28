@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zeitgauge"
-version = "0.2.0"
+version = "0.3.0"
 description = "Read the mood of a region's households and society, and turn it into product ideas that suit the moment."
 readme = "README.md"
 requires-python = ">=3.11"

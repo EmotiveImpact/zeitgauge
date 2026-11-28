@@ -1,0 +1,277 @@
+{
+  "regions": {
+    "uk": {
+      "region": "uk",
+      "region_name": "United Kingdom",
+      "date": "2026-11-28",
+      "week_of": "2026-11-23",
+      "monthly": {
+        "as_of": "2026-11-26",
+        "phase": "downturn",
+        "stability": "strained",
+        "headline": "Downturn: the squeeze, society under strain",
+        "levelling_off": false,
+        "household_index": 36,
+        "society_index": 33,
+        "household_momentum": -0.034,
+        "next_phase": "recovery",
+        "readings_file": "data/readings/uk/2026-11.json"
+      },
+      "tech_wave": {
+        "phase": "Build and hype phase",
+        "advice": "Sell picks and shovels: templates, courses and tools that help ordinary people use the new technology."
+      },
+      "pulse": null,
+      "alerts": [],
+      "needs": [
+        {
+          "id": "comfort",
+          "name": "Comfort and nostalgia",
+          "feeling": "Familiar, warm things for an uneasy time.",
+          "rank": 1.447,
+          "evidence": 0.947,
+          "momentum": -0.164,
+          "trend": "easing",
+          "pulse_evidence": null,
+          "rising_this_week": false,
+          "confidence": "Strong",
+          "fit": true,
+          "drivers_found": 3,
+          "why": [
+            "Trust and unrest, judgement (-2 to +2): -1 against a normal of 0 (worse than normal)",
+            "Consumer confidence (GfK): -22 against a normal of -11 (worse than normal, getting better)",
+            "House price to earnings (England): 7.6x against a normal of 6.5x (worse than normal, getting better)"
+          ],
+          "against": [],
+          "alerts": [],
+          "holds_next": null,
+          "next_note": "Tied to the social mood more than the economy, so it lasts while society stays under strain.",
+          "weaken": "these turn better for households: Trust and unrest, judgement (-2 to +2), Consumer confidence (GfK)",
+          "ideas": [
+            {
+              "name": "Heated throws and cosy-night bundles",
+              "format": "physical",
+              "price": "\u00a330 to \u00a360",
+              "test": "One bundle, TikTok Shop and a gift-guide placement before Christmas",
+              "rides_tech_wave": false
+            },
+            {
+              "name": "Retro and nostalgia merch for a specific decade or show (licensed or original)",
+              "format": "physical",
+              "price": "\u00a315 to \u00a335",
+              "test": "Print-on-demand designs; spend nothing until something sells",
+              "rides_tech_wave": false
+            }
+          ],
+          "call": {
+            "status": "logged",
+            "id": "uk-brief-2026-11-28-comfort",
+            "made_on": "2026-11-28",
+            "due": "2027-02-27",
+            "probability": 0.65,
+            "question": "Google searches in the UK for 'heated throw' and 'vinyl records' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+            "check": {
+              "kind": "trends",
+              "geo": "GB",
+              "keywords": [
+                "heated throw",
+                "vinyl records"
+              ],
+              "window_days": 28
+            }
+          }
+        },
+        {
+          "id": "flexible_spending",
+          "name": "Flexible spending",
+          "feeling": "Let people pause, shrink or spread costs instead of cancelling.",
+          "rank": 1.374,
+          "evidence": 0.874,
+          "momentum": 0.025,
+          "trend": "holding",
+          "pulse_evidence": null,
+          "rising_this_week": false,
+          "confidence": "Strong",
+          "fit": true,
+          "drivers_found": 4,
+          "why": [
+            "Direct Debit failure rate: 2.41% against a normal of 2.3% (worse than normal, getting worse)",
+            "Consumer confidence (GfK): -22 against a normal of -11 (worse than normal, getting better)",
+            "Bank Rate: 4% against a normal of 2.5% (worse than normal, getting worse)"
+          ],
+          "against": [],
+          "alerts": [],
+          "holds_next": false,
+          "next_note": "Likely to fade if the cycle turns to recovery, so keep stock and fixed costs light.",
+          "weaken": "these turn better for households: Direct Debit failure rate, Consumer confidence (GfK)",
+          "ideas": [
+            {
+              "name": "Refill and smaller-pack versions of an existing product",
+              "format": "physical",
+              "price": "20% to 40% under the full size",
+              "test": "Offer the refill to current customers first",
+              "rides_tech_wave": false
+            },
+            {
+              "name": "Pausable or skip-a-month subscription instead of a fixed one",
+              "format": "service",
+              "price": "same price, more control",
+              "test": "Add a pause button and measure cancellations saved",
+              "rides_tech_wave": false
+            }
+          ],
+          "call": {
+            "status": "logged",
+            "id": "uk-brief-2026-11-28-flexible_spending",
+            "made_on": "2026-11-28",
+            "due": "2027-02-27",
+            "probability": 0.65,
+            "question": "Google searches in the UK for 'cancel subscription' and 'refill pouch' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+            "check": {
+              "kind": "trends",
+              "geo": "GB",
+              "keywords": [
+                "cancel subscription",
+                "refill pouch"
+              ],
+              "window_days": 28
+            }
+          }
+        },
+        {
+          "id": "make_do_mend",
+          "name": "Make do and mend",
+          "feeling": "Fix, cook and make at home to save money.",
+          "rank": 1.268,
+          "evidence": 0.767,
+          "momentum": 0.15,
+          "trend": "building",
+          "pulse_evidence": null,
+          "rising_this_week": false,
+          "confidence": "Strong",
+          "fit": true,
+          "drivers_found": 5,
+          "why": [
+            "Inflation expected in a year (Bank of England): 5% against a normal of 2.5% (worse than normal)",
+            "Inflation now (CPI): 3.6% against a normal of 2.5% (worse than normal, getting worse)",
+            "Personal finances, next 12 months (GfK): -5 against a normal of 0 (worse than normal, getting worse)",
+            "Bank Rate: 4% against a normal of 2.5% (worse than normal, getting worse)"
+          ],
+          "against": [],
+          "alerts": [],
+          "holds_next": false,
+          "next_note": "Likely to fade if the cycle turns to recovery, so keep stock and fixed costs light.",
+          "weaken": "these turn better for households: Inflation expected in a year (Bank of England), Inflation now (CPI)",
+          "ideas": [
+            {
+              "name": "Air fryer and slow cooker batch-cook packs (recipes, shopping lists, tins)",
+              "format": "digital",
+              "price": "\u00a35 to \u00a315",
+              "test": "Free sample week as a lead magnet; count email sign-ups",
+              "rides_tech_wave": false
+            },
+            {
+              "name": "Draught-proofing and energy-saving home kit",
+              "format": "physical",
+              "price": "\u00a320 to \u00a340",
+              "test": "Amazon or Etsy listing ahead of the cold snap; watch conversion",
+              "rides_tech_wave": false
+            }
+          ],
+          "call": {
+            "status": "logged",
+            "id": "uk-brief-2026-11-28-make_do_mend",
+            "made_on": "2026-11-28",
+            "due": "2027-02-27",
+            "probability": 0.65,
+            "question": "Google searches in the UK for 'air fryer recipes' and 'draught excluder' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+            "check": {
+              "kind": "trends",
+              "geo": "GB",
+              "keywords": [
+                "air fryer recipes",
+                "draught excluder"
+              ],
+              "window_days": 28
+            }
+          }
+        }
+      ],
+      "also": [
+        {
+          "id": "small_space",
+          "name": "Renting and small-space living",
+          "feeling": "Make a rented or shared home feel like yours without spending much.",
+          "confidence": "Moderate",
+          "evidence": 0.734,
+          "trend": "holding",
+          "why": [
+            "House price to earnings (England): 7.6x against a normal of 6.5x (worse than normal, getting better)"
+          ]
+        },
+        {
+          "id": "money_control",
+          "name": "Money control",
+          "feeling": "Help people feel in charge of their money.",
+          "confidence": "Moderate",
+          "evidence": 0.688,
+          "trend": "building",
+          "why": [
+            "Direct Debit failure rate: 2.41% against a normal of 2.3% (worse than normal, getting worse)"
+          ]
+        },
+        {
+          "id": "safety",
+          "name": "Safety and self-reliance",
+          "feeling": "Trust is low, so people want to feel prepared and protected.",
+          "confidence": "Moderate",
+          "evidence": 0.676,
+          "trend": "easing",
+          "why": [
+            "Trust and unrest, judgement (-2 to +2): -1 against a normal of 0 (worse than normal)"
+          ]
+        },
+        {
+          "id": "small_rewards",
+          "name": "Small rewards",
+          "feeling": "Affordable treats that feel premium: the lipstick effect.",
+          "confidence": "Moderate",
+          "evidence": 0.52,
+          "trend": "easing",
+          "why": [
+            "Consumer confidence (GfK): -22 against a normal of -11 (worse than normal, getting better)"
+          ]
+        }
+      ],
+      "scenarios": [
+        {
+          "name": "Frayed",
+          "lit": 4,
+          "known": 4,
+          "story": "Sticky prices meet falling trust. Protest, polarisation and anxiety grow. People spend on safety, comfort and control."
+        },
+        {
+          "name": "Grind",
+          "lit": 3,
+          "known": 4,
+          "story": "Prices stay sticky and rates stay high, but society copes. A long, dull squeeze where value and small rewards win."
+        }
+      ],
+      "scorecard": {
+        "settled": 0,
+        "right": 0,
+        "brier": null,
+        "open": 0,
+        "next_due": null
+      },
+      "checked": [],
+      "method": "needs-v1",
+      "calls_logged": [
+        "uk-brief-2026-11-28-comfort",
+        "uk-brief-2026-11-28-flexible_spending",
+        "uk-brief-2026-11-28-make_do_mend"
+      ]
+    }
+  },
+  "generated": "2026-11-28"
+}

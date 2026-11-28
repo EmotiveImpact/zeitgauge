@@ -38,5 +38,62 @@
     "region": "uk",
     "outcome": null,
     "basis": "unemployment"
+  },
+  {
+    "id": "uk-brief-2026-11-28-comfort",
+    "question": "Google searches in the UK for 'heated throw' and 'vinyl records' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+    "probability": 0.65,
+    "made_on": "2026-11-28",
+    "resolves_by": "2027-02-27",
+    "region": "uk",
+    "outcome": null,
+    "basis": "need:comfort",
+    "check": {
+      "kind": "trends",
+      "geo": "GB",
+      "keywords": [
+        "heated throw",
+        "vinyl records"
+      ],
+      "window_days": 28
+    }
+  },
+  {
+    "id": "uk-brief-2026-11-28-flexible_spending",
+    "question": "Google searches in the UK for 'cancel subscription' and 'refill pouch' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+    "probability": 0.65,
+    "made_on": "2026-11-28",
+    "resolves_by": "2027-02-27",
+    "region": "uk",
+    "outcome": null,
+    "basis": "need:flexible_spending",
+    "check": {
+      "kind": "trends",
+      "geo": "GB",
+      "keywords": [
+        "cancel subscription",
+        "refill pouch"
+      ],
+      "window_days": 28
+    }
+  },
+  {
+    "id": "uk-brief-2026-11-28-make_do_mend",
+    "question": "Google searches in the UK for 'air fryer recipes' and 'draught excluder' are higher in the 4 weeks to 27 February 2027 than in the same 4 weeks a year earlier",
+    "probability": 0.65,
+    "made_on": "2026-11-28",
+    "resolves_by": "2027-02-27",
+    "region": "uk",
+    "outcome": null,
+    "basis": "need:make_do_mend",
+    "check": {
+      "kind": "trends",
+      "geo": "GB",
+      "keywords": [
+        "air fryer recipes",
+        "draught excluder"
+      ],
+      "window_days": 28
+    }
   }
 ]

@@ -73,7 +73,7 @@ def score_lens(signals: list[Signal], readings: dict) -> LensResult:
         detail.append({"id": sig.id, "name": sig.name, "latest": r["latest"],
                        "previous": r.get("previous"), "normal": sig.normal,
                        "score": round(z, 2), "momentum": None if m is None else round(m, 2),
-                       "band": band(z), "leading": sig.leading})
+                       "band": band(z), "leading": sig.leading, "unit": sig.unit})
     level = lvl / lvl_w if lvl_w else 0.0
     momentum = mom / mom_w if mom_w else 0.0
     return LensResult(level=level, momentum=momentum, index=round(50 + 20 * level), detail=detail)

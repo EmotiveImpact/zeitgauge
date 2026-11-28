@@ -29,6 +29,7 @@ class Forecast:
     region: str
     outcome: bool | None = None  # None until resolved
     basis: str = ""  # signal, framework or scenario behind the call
+    check: dict | None = None  # how to settle it automatically, e.g. a Google Trends query
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.probability <= 1.0:
@@ -68,4 +69,10 @@ def load_log(path: Path) -> list[Forecast]:
 
 
 def save_log(path: Path, forecasts: list[Forecast]) -> None:
-    Path(path).write_text(json.dumps([asdict(f) for f in forecasts], indent=2), encoding="utf-8")
+    rows = []
+    for f in forecasts:
+        row = asdict(f)
+        if row["check"] is None:
+            del row["check"]  # keep hand-written calls tidy
+        rows.append(row)
+    Path(path).write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")

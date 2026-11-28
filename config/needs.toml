@@ -1,0 +1,273 @@
+# Zeitgauge needs catalogue: what people need, and the signals that show it.
+#
+# Each need lists its drivers: the signals that make it more pressing.
+#   signal = a monthly signal id (config/regions/<region>.toml)
+#   pulse  = a daily pulse signal id (config/pulse/<region>.toml); "social_*" matches any social platform
+#   when   = "worse" if the need grows when that signal is bad for households,
+#            "better" if it grows when the signal is good
+#   weight = how much that signal counts towards this need
+# Ids that a region doesn't have are skipped, so one catalogue covers the UK
+# and the US (umich stands in for gfk, and so on).
+#
+# phases / overlay: where the need fits the playbook (playbook.py). A fit adds
+# a small bonus, and a need whose phases include the *next* phase is marked as
+# still working when the cycle turns.
+#
+# alerts: alert watch ids (config/pulse/<region>.toml) that make the need more
+# pressing when they fire during the week.
+#
+# check: a measurable proxy, so every idea we put forward becomes a dated call
+# that is checked 13 weeks later (Google Trends interest for these searches).
+#
+# Ideas: name, format (physical, digital, service or content), a rough price
+# band and the cheapest way to test demand. Prices are UK examples.
+
+[[needs]]
+id = "money_control"
+name = "Money control"
+feeling = "Help people feel in charge of their money."
+phases = ["slowdown", "downturn"]
+drivers = [
+  { signal = "gfk_pfin", when = "worse", weight = 1.5 },
+  { signal = "umich", when = "worse", weight = 1.0 },
+  { signal = "dd_failure", when = "worse", weight = 1.0 },
+  { signal = "card_delinquency", when = "worse", weight = 1.0 },
+  { signal = "real_pay", when = "worse", weight = 1.0 },
+  { signal = "cpi", when = "worse", weight = 0.75 },
+  { pulse = "news_squeeze", when = "worse", weight = 0.75 },
+  { pulse = "wiki_worry", when = "worse", weight = 0.5 },
+  { pulse = "search_hardship", when = "worse", weight = 0.75 },
+  { pulse = "social_*", when = "worse", weight = 0.5 },
+]
+alerts = ["prices", "budget"]
+check = { searches = ["budget planner", "money saving tips"] }
+ideas = [
+  { name = "Printable and spreadsheet budget planners for couples and house shares", format = "digital", price = "£4 to £12", test = "Three Etsy listings with different covers; count sales in 14 days" },
+  { name = "A weekly 'cheaper swaps' newsletter or short-video series", format = "content", price = "free, with affiliate links", test = "Ten short videos in two weeks; watch saves and follows" },
+  { name = "Declutter-and-resell starter kit (labels, guide, pricing cheat sheet)", format = "physical", price = "£10 to £20", test = "Pre-order page with a £1 deposit" },
+]
+
+[[needs]]
+id = "small_rewards"
+name = "Small rewards"
+feeling = "Affordable treats that feel premium: the lipstick effect."
+phases = ["slowdown", "downturn"]
+drivers = [
+  { signal = "gfk", when = "worse", weight = 1.0 },
+  { signal = "umich", when = "worse", weight = 1.0 },
+  { signal = "real_pay", when = "worse", weight = 0.75 },
+  { signal = "cpi", when = "worse", weight = 0.5 },
+  { signal = "retail_volume", when = "better", weight = 0.5 },
+  { pulse = "news_tone_money", when = "worse", weight = 0.5 },
+  { pulse = "news_squeeze", when = "worse", weight = 0.5 },
+]
+check = { searches = ["press on nails", "mini perfume"] }
+ideas = [
+  { name = "Mini and sample-size bundles of a premium product people already love", format = "physical", price = "£8 to £20", test = "Bundle three minis from wholesale; TikTok Shop listing for two weeks" },
+  { name = "At-home salon or cafe ritual kits (press-on nails, latte art, face masks)", format = "physical", price = "£10 to £25", test = "One hero kit, pre-orders through a simple landing page" },
+  { name = "A monthly 'little luxury' box under £15", format = "physical", price = "£12 to £15 a month", test = "Waitlist with the first box shown; aim for 200 sign-ups" },
+]
+
+[[needs]]
+id = "make_do_mend"
+name = "Make do and mend"
+feeling = "Fix, cook and make at home to save money."
+phases = ["downturn", "slowdown"]
+drivers = [
+  { signal = "cpi", when = "worse", weight = 1.0 },
+  { signal = "boe_infl_fcst", when = "worse", weight = 0.75 },
+  { signal = "real_pay", when = "worse", weight = 1.0 },
+  { signal = "gfk_pfin", when = "worse", weight = 0.75 },
+  { signal = "bank_rate", when = "worse", weight = 0.5 },
+  { pulse = "news_squeeze", when = "worse", weight = 0.5 },
+]
+alerts = ["prices"]
+check = { searches = ["air fryer recipes", "draught excluder"] }
+ideas = [
+  { name = "Air fryer and slow cooker batch-cook packs (recipes, shopping lists, tins)", format = "digital", price = "£5 to £15", test = "Free sample week as a lead magnet; count email sign-ups" },
+  { name = "Draught-proofing and energy-saving home kit", format = "physical", price = "£20 to £40", test = "Amazon or Etsy listing ahead of the cold snap; watch conversion" },
+  { name = "Clothing and kit repair bundles with video guides", format = "physical", price = "£12 to £25", test = "Pre-order page plus three how-to videos" },
+]
+
+[[needs]]
+id = "income_boost"
+name = "Extra income"
+feeling = "Help people earn a bit more on the side."
+phases = ["downturn", "slowdown", "recovery"]
+drivers = [
+  { signal = "unemployment", when = "worse", weight = 1.0 },
+  { signal = "sahm", when = "worse", weight = 1.0 },
+  { signal = "youth_unemployment", when = "worse", weight = 1.0 },
+  { signal = "real_pay", when = "worse", weight = 1.0 },
+  { signal = "gfk_pfin", when = "worse", weight = 0.5 },
+  { pulse = "wiki_worry", when = "worse", weight = 0.5 },
+]
+alerts = ["layoffs"]
+check = { searches = ["side hustle", "make money online"] }
+ideas = [
+  { name = "Side-hustle starter kits for one proven route (reselling, tutoring, pet sitting)", format = "digital", price = "£15 to £40", test = "Short course pre-sale to an email list; 20 buyers before building" },
+  { name = "Simple AI-tool templates that save small sellers hours (listings, replies, product photos)", format = "digital", price = "£10 to £30", test = "Notion or Canva template on Gumroad; count sales in 14 days", tech = "install" },
+  { name = "Freelancer admin pack: invoices, tax-year tracker, rate calculator", format = "digital", price = "£8 to £20", test = "Etsy and Gumroad listings side by side" },
+]
+
+[[needs]]
+id = "safety"
+name = "Safety and self-reliance"
+feeling = "Trust is low, so people want to feel prepared and protected."
+overlay = ["strained"]
+phases = []
+drivers = [
+  { signal = "trust_unrest", when = "worse", weight = 1.5 },
+  { signal = "trust_gov", when = "worse", weight = 1.5 },
+  { signal = "youth_unemployment", when = "worse", weight = 0.75 },
+  { signal = "unemployment", when = "worse", weight = 0.5 },
+  { signal = "gilt_10y", when = "worse", weight = 0.5 },
+  { signal = "treasury_10y", when = "worse", weight = 0.5 },
+  { pulse = "news_unrest", when = "worse", weight = 1.0 },
+  { pulse = "epu", when = "worse", weight = 0.75 },
+]
+alerts = ["unrest", "money", "markets"]
+check = { searches = ["power bank", "home security camera"] }
+ideas = [
+  { name = "Home 'ready kit': power bank, torch, first aid and a printed plan", format = "physical", price = "£25 to £50", test = "Bundle from wholesale; landing page with pre-orders" },
+  { name = "Renter-friendly home security bundle (no-drill camera, door sensor)", format = "physical", price = "£40 to £80", test = "Affiliate comparison page first, to see which items people click" },
+  { name = "At-home health check bundles with plain-English guides", format = "physical", price = "£15 to £35", test = "Content first: three explainer videos, then a pre-order link" },
+]
+
+[[needs]]
+id = "comfort"
+name = "Comfort and nostalgia"
+feeling = "Familiar, warm things for an uneasy time."
+overlay = ["strained"]
+phases = []
+drivers = [
+  { signal = "trust_unrest", when = "worse", weight = 1.0 },
+  { signal = "trust_gov", when = "worse", weight = 1.0 },
+  { signal = "gfk", when = "worse", weight = 0.75 },
+  { signal = "umich", when = "worse", weight = 0.75 },
+  { signal = "house_earnings", when = "worse", weight = 0.5 },
+  { pulse = "news_tone_money", when = "worse", weight = 0.5 },
+  { pulse = "epu", when = "worse", weight = 0.5 },
+]
+check = { searches = ["heated throw", "vinyl records"] }
+ideas = [
+  { name = "Heated throws and cosy-night bundles", format = "physical", price = "£30 to £60", test = "One bundle, TikTok Shop and a gift-guide placement before Christmas" },
+  { name = "Retro and nostalgia merch for a specific decade or show (licensed or original)", format = "physical", price = "£15 to £35", test = "Print-on-demand designs; spend nothing until something sells" },
+  { name = "Pet comfort treats and calming products", format = "physical", price = "£8 to £20", test = "Small batch on Etsy; track repeat orders" },
+]
+
+[[needs]]
+id = "small_space"
+name = "Renting and small-space living"
+feeling = "Make a rented or shared home feel like yours without spending much."
+phases = ["slowdown", "downturn", "recovery"]
+drivers = [
+  { signal = "house_earnings", when = "worse", weight = 1.5 },
+  { signal = "house_income", when = "worse", weight = 1.5 },
+  { signal = "bank_rate", when = "worse", weight = 1.0 },
+  { signal = "gilt_10y", when = "worse", weight = 0.5 },
+  { signal = "treasury_10y", when = "worse", weight = 0.5 },
+  { signal = "youth_unemployment", when = "worse", weight = 0.5 },
+]
+check = { searches = ["peel and stick wallpaper", "renter friendly"] }
+ideas = [
+  { name = "No-drill, peel-off room upgrade kits (lighting, shelves, wall panels)", format = "physical", price = "£20 to £50", test = "Before-and-after videos with an affiliate link, then own-brand" },
+  { name = "Small-space storage for house shares and studios", format = "physical", price = "£15 to £40", test = "Amazon listing for one hero product" },
+  { name = "House-share tools: bills splitter, chore rota, move-in checklist", format = "digital", price = "£3 to £10, or free with ads", test = "Free template, count downloads" },
+]
+
+[[needs]]
+id = "flexible_spending"
+name = "Flexible spending"
+feeling = "Let people pause, shrink or spread costs instead of cancelling."
+phases = ["slowdown", "downturn"]
+drivers = [
+  { signal = "dd_failure", when = "worse", weight = 1.0 },
+  { signal = "card_delinquency", when = "worse", weight = 1.0 },
+  { signal = "bank_rate", when = "worse", weight = 0.75 },
+  { signal = "gfk", when = "worse", weight = 0.75 },
+  { signal = "umich", when = "worse", weight = 0.75 },
+  { signal = "saving_ratio", when = "worse", weight = 0.5 },
+  { signal = "saving_rate", when = "worse", weight = 0.5 },
+]
+alerts = ["money", "budget"]
+check = { searches = ["cancel subscription", "refill pouch"] }
+ideas = [
+  { name = "Refill and smaller-pack versions of an existing product", format = "physical", price = "20% to 40% under the full size", test = "Offer the refill to current customers first" },
+  { name = "Pausable or skip-a-month subscription instead of a fixed one", format = "service", price = "same price, more control", test = "Add a pause button and measure cancellations saved" },
+  { name = "Rental or swap service for things people use rarely (kids' gear, tools, occasionwear)", format = "service", price = "£5 to £20 a hire", test = "Local Facebook group pilot with ten items" },
+]
+
+[[needs]]
+id = "treat_again"
+name = "Treat yourself again"
+feeling = "Step up from small treats to mid-priced ones as confidence returns."
+phases = ["recovery"]
+drivers = [
+  { signal = "gfk", when = "better", weight = 1.5 },
+  { signal = "umich", when = "better", weight = 1.5 },
+  { signal = "gfk_pfin", when = "better", weight = 1.0 },
+  { signal = "real_pay", when = "better", weight = 1.0 },
+  { signal = "cpi", when = "better", weight = 0.5 },
+  { pulse = "news_tone_money", when = "better", weight = 0.75 },
+]
+check = { searches = ["perfume gift set", "designer dupes"] }
+ideas = [
+  { name = "Affordable-luxury upgrades in beauty and fragrance", format = "physical", price = "£25 to £60", test = "Gift-set pre-orders ahead of a seasonal moment" },
+  { name = "Premium versions of everyday basics (better socks, better coffee)", format = "physical", price = "£15 to £40", test = "Small batch, sold through one marketplace" },
+]
+
+[[needs]]
+id = "getting_out"
+name = "Getting out again"
+feeling = "Cheap experiences and socialising come back."
+phases = ["recovery", "expansion"]
+overlay = ["stable"]
+drivers = [
+  { signal = "gfk", when = "better", weight = 1.0 },
+  { signal = "umich", when = "better", weight = 1.0 },
+  { signal = "unemployment", when = "better", weight = 0.75 },
+  { signal = "trust_unrest", when = "better", weight = 0.5 },
+  { pulse = "news_tone_money", when = "better", weight = 0.5 },
+  { pulse = "news_unrest", when = "better", weight = 0.5 },
+]
+check = { searches = ["things to do near me", "supper club"] }
+ideas = [
+  { name = "Local clubs and meet-ups with a small fee (run clubs, craft nights)", format = "service", price = "£5 to £15 a session", test = "One event on Eventbrite; count tickets" },
+  { name = "Budget day-out guides and bundles for a city", format = "content", price = "free, with partner discounts", test = "Instagram guide series; track saves" },
+]
+
+[[needs]]
+id = "time_saved"
+name = "Time saved"
+feeling = "Pay to skip chores when money feels easier."
+phases = ["expansion"]
+drivers = [
+  { signal = "real_pay", when = "better", weight = 1.0 },
+  { signal = "unemployment", when = "better", weight = 0.75 },
+  { signal = "gfk", when = "better", weight = 0.75 },
+  { signal = "umich", when = "better", weight = 0.75 },
+]
+check = { searches = ["meal kit", "cleaner near me"] }
+ideas = [
+  { name = "Done-for-you services in a niche (meal prep, admin, garden tidy)", format = "service", price = "£20 to £60 a visit", test = "Leaflet one postcode and count calls" },
+  { name = "Add-on delivery or set-up for an existing product", format = "service", price = "£5 to £15 extra", test = "Offer it at checkout and count take-up" },
+]
+
+[[needs]]
+id = "status_novelty"
+name = "Status and novelty"
+feeling = "Things people enjoy showing off, and new experiences."
+phases = ["expansion"]
+overlay = ["stable"]
+drivers = [
+  { signal = "gfk", when = "better", weight = 1.0 },
+  { signal = "umich", when = "better", weight = 1.0 },
+  { signal = "gfk_pfin", when = "better", weight = 0.75 },
+  { signal = "saving_ratio", when = "better", weight = 0.5 },
+]
+check = { searches = ["limited edition", "personalised gifts"] }
+ideas = [
+  { name = "Limited drops and personalised versions of a product", format = "physical", price = "£20 to £80", test = "Numbered run of 100; time how long it takes to sell out" },
+  { name = "Experience gifts in a niche people post about", format = "service", price = "£30 to £100", test = "Partner with one venue; pre-sell 20" },
+]
